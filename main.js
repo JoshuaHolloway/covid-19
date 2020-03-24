@@ -37,10 +37,9 @@ fetch(url)
         console.log(x_axis_data__confirmed__growth_factor);
     })
     .then(() => {
-        // chart_callback__linear();
+        chart_callback__linear();
         chart_callback__log();
-        chart_callback__growth();
-        chart_callback__growth_superimposed();
+        chart_callback__change();
     });
 //===============================================
 const chart_callback__linear = () => {
@@ -161,16 +160,16 @@ const chart_callback__log = () => {
 
 };
 //===============================================
-const chart_callback__growth = () => {
+const chart_callback__change = () => {
 
     // TODO: Get more accurate with the slice indices
     const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
     const x_change_sliced = x_axis_data__confirmed__change.slice(0,
                             x_axis_data__confirmed__change.length);
-    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
+    // const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
 
     let config = {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: y_sliced,
             datasets: [{
@@ -179,12 +178,6 @@ const chart_callback__growth = () => {
                 borderColor: window.chartColors.red,
                 data: x_change_sliced,
                 fill: false,
-            }, {
-                label: 'Growth Factor',
-                fill: false,
-                backgroundColor: window.chartColors.blue,
-                borderColor: window.chartColors.blue,
-                data: x_growth_sliced,
             }]
         },
         options: {
@@ -229,58 +222,10 @@ const chart_callback__growth = () => {
 
     const pill = document.getElementById('pill-3');
     pill.addEventListener('click', () => {
-        const ctx = document.getElementById('canvas-growth').getContext('2d');
+        const ctx = document.getElementById('canvas-change').getContext('2d');
         window.myLine = new Chart(ctx, config);
     });
 
 
 };
 //===============================================
-const chart_callback__growth_superimposed = () => {
-
-
-    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
-    const x_change_sliced = x_axis_data__confirmed__change.slice(0,
-                            x_axis_data__confirmed__change.length);
-    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
-
-    const chartData = {
-        labels: y_sliced,
-        datasets: [{
-            type: 'line',
-            label: 'Dataset 1',
-            borderColor: window.chartColors.blue,
-            borderWidth: 2,
-            fill: false,
-            data: x_growth_sliced
-        }, {
-            type: 'bar',
-            label: 'Dataset 2',
-            backgroundColor: window.chartColors.red,
-            data: x_change_sliced,
-            borderColor: 'white',
-            borderWidth: 2
-        }]
-
-    };
-    window.onload = function() {
-        var ctx = document.getElementById('canvas').getContext('2d');
-        window.myMixedChart = new Chart(ctx, {
-            type: 'bar',
-            data: chartData,
-            options: {
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'Chart.js Combo Bar Line Chart'
-                },
-                tooltips: {
-                    mode: 'index',
-                    intersect: true
-                }
-            }
-        });
-    };
-
-
-};
