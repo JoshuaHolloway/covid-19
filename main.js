@@ -7,6 +7,9 @@ const url = 'https://pomber.github.io/covid19/timeseries.json';
 fetch(url)
     .then(res => res.json())
     .then(data => {
+
+        console.log(data.US);
+
         data.US.forEach((elem, idx, arr) => {
             data_arr.push(elem);
             y_axis_labels.push(elem.date);
@@ -34,9 +37,10 @@ fetch(url)
         console.log(x_axis_data__confirmed__growth_factor);
     })
     .then(() => {
+        // chart_callback__linear();
         chart_callback__log();
-        chart_callback__linear();
         chart_callback__growth();
+        chart_callback__growth_superimposed();
     });
 //===============================================
 const chart_callback__linear = () => {
@@ -46,32 +50,18 @@ const chart_callback__linear = () => {
         data: {
             labels: y_axis_labels,
             datasets: [{
-                label: 'My First dataset',
+                label: 'Total Confirmed Cases',
                 backgroundColor: window.chartColors.red,
                 borderColor: window.chartColors.red,
                 data: x_axis_data__confirmed,
                 fill: false,
-            }, {
-                label: 'My Second dataset',
-                fill: false,
-                backgroundColor: window.chartColors.blue,
-                borderColor: window.chartColors.blue,
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor()
-                ],
             }]
         },
         options: {
             responsive: true,
             title: {
                 display: true,
-                text: 'Chart.js Line Chart'
+                text: 'United States Total Confirmed Cases'
             },
             tooltips: {
                 mode: 'index',
@@ -112,65 +102,6 @@ const chart_callback__linear = () => {
     const pill = document.getElementById('pill-1');
     pill.addEventListener('click', () => {
         window.myLine = new Chart(ctx, config);
-    });
-
-    document.getElementById('randomizeData').addEventListener('click', function() {
-        config.data.datasets.forEach(function(dataset) {
-            dataset.data = dataset.data.map(function() {
-                return randomScalingFactor();
-            });
-
-        });
-
-        window.myLine.update();
-    });
-
-    const colorNames = Object.keys(window.chartColors);
-    document.getElementById('addDataset').addEventListener('click', function() {
-        var colorName = colorNames[config.data.datasets.length % colorNames.length];
-        var newColor = window.chartColors[colorName];
-        var newDataset = {
-            label: 'Dataset ' + config.data.datasets.length,
-            backgroundColor: newColor,
-            borderColor: newColor,
-            data: [],
-            fill: false
-        };
-
-        for (var index = 0; index < config.data.labels.length; ++index) {
-            newDataset.data.push(randomScalingFactor());
-        }
-
-        config.data.datasets.push(newDataset);
-        window.myLine.update();
-    });
-
-    document.getElementById('addData').addEventListener('click', function() {
-        if (config.data.datasets.length > 0) {
-            var month = MONTHS[config.data.labels.length % MONTHS.length];
-            config.data.labels.push(month);
-
-            config.data.datasets.forEach(function(dataset) {
-                dataset.data.push(randomScalingFactor());
-            });
-
-            window.myLine.update();
-        }
-    });
-
-    document.getElementById('removeDataset').addEventListener('click', function() {
-        config.data.datasets.splice(0, 1);
-        window.myLine.update();
-    });
-
-    document.getElementById('removeData').addEventListener('click', function() {
-        config.data.labels.splice(-1, 1); // remove the label first
-
-        config.data.datasets.forEach(function(dataset) {
-            dataset.data.pop();
-        });
-
-        window.myLine.update();
     });
 };
 //===============================================
@@ -233,10 +164,10 @@ const chart_callback__log = () => {
 const chart_callback__growth = () => {
 
     // TODO: Get more accurate with the slice indices
-    const y_sliced = y_axis_labels.slice(34,y_axis_labels.length); 
-    const x_change_sliced = x_axis_data__confirmed__change.slice(34,
+    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
+    const x_change_sliced = x_axis_data__confirmed__change.slice(0,
                             x_axis_data__confirmed__change.length);
-    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(34, x_axis_data__confirmed__growth_factor.length);
+    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
 
     let config = {
         type: 'line',
@@ -301,6 +232,55 @@ const chart_callback__growth = () => {
         const ctx = document.getElementById('canvas-growth').getContext('2d');
         window.myLine = new Chart(ctx, config);
     });
+
+
+};
+//===============================================
+const chart_callback__growth_superimposed = () => {
+
+
+    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
+    const x_change_sliced = x_axis_data__confirmed__change.slice(0,
+                            x_axis_data__confirmed__change.length);
+    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
+
+    const chartData = {
+        labels: y_sliced,
+        datasets: [{
+            type: 'line',
+            label: 'Dataset 1',
+            borderColor: window.chartColors.blue,
+            borderWidth: 2,
+            fill: false,
+            data: x_growth_sliced
+        }, {
+            type: 'bar',
+            label: 'Dataset 2',
+            backgroundColor: window.chartColors.red,
+            data: x_change_sliced,
+            borderColor: 'white',
+            borderWidth: 2
+        }]
+
+    };
+    window.onload = function() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        window.myMixedChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Chart.js Combo Bar Line Chart'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: true
+                }
+            }
+        });
+    };
 
 
 };
