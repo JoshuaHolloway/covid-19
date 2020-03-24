@@ -11,18 +11,14 @@ fetch(url)
             x_axis_data__confirmed.push(elem.confirmed);
         });
     })
-    .then(() => chart_callback());
+    .then(() => {
+        chart_callback__log();
+        chart_callback__linear();
+        
+    });
 //===============================================
-const button_click_callback = (event) => {
-    console.log('CORONA button click!');
+const chart_callback__linear = () => {
 
-};
-//===============================================
-const button_elem = document.getElementById('josh');
-button_elem.addEventListener('click', button_click_callback);
-//===============================================
-const chart_callback = () => {
-    let MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     let config = {
         type: 'line',
         data: {
@@ -73,17 +69,27 @@ const chart_callback = () => {
                 }],
                 yAxes: [{
                     display: true,
+                    type: 'linear',
                     scaleLabel: {
                         display: true,
-                        labelString: 'Value'
-                    }
+                        labelString: 'Value',
+                    },
                 }]
             }
         }
     };
 
+
+    // If clicked on then update window display
+    const pill_1 = document.getElementById('pill-1');
+    pill_1.addEventListener('click', () => {
+        const ctx = document.getElementById('canvas').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+    });
+
+    // Update display on window load
     window.onload = function() {
-        var ctx = document.getElementById('canvas').getContext('2d');
+        const ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, config);
     };
 
@@ -98,7 +104,7 @@ const chart_callback = () => {
         window.myLine.update();
     });
 
-    var colorNames = Object.keys(window.chartColors);
+    const colorNames = Object.keys(window.chartColors);
     document.getElementById('addDataset').addEventListener('click', function() {
         var colorName = colorNames[config.data.datasets.length % colorNames.length];
         var newColor = window.chartColors[colorName];
@@ -145,4 +151,74 @@ const chart_callback = () => {
 
         window.myLine.update();
     });
+};
+//===============================================
+const chart_callback__log = () => {
+    let config = {
+        type: 'line',
+        data: {
+            labels: y_axis_labels,
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                data: x_axis_data__confirmed,
+                fill: false,
+            }, {
+                label: 'My Second dataset',
+                fill: false,
+                backgroundColor: window.chartColors.blue,
+                borderColor: window.chartColors.blue,
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor()
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Chart.js Line Chart'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: 'logarithmic',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value',
+                    },
+                }]
+            }
+        }
+    };
+
+    const pill_2 = document.getElementById('pill-2');
+    pill_2.addEventListener('click', () => {
+        const ctx = document.getElementById('canvas-log').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+    });
+
+
 };
