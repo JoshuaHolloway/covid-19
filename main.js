@@ -231,22 +231,29 @@ const chart_callback__log = () => {
 };
 //===============================================
 const chart_callback__growth = () => {
+
+    // TODO: Get more accurate with the slice indices
+    const y_sliced = y_axis_labels.slice(34,y_axis_labels.length); 
+    const x_change_sliced = x_axis_data__confirmed__change.slice(34,
+                            x_axis_data__confirmed__change.length);
+    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(34, x_axis_data__confirmed__growth_factor.length);
+
     let config = {
         type: 'line',
         data: {
-            labels: y_axis_labels,
+            labels: y_sliced,
             datasets: [{
                 label: 'Change',
                 backgroundColor: window.chartColors.red,
                 borderColor: window.chartColors.red,
-                data: x_axis_data__confirmed__change,
+                data: x_change_sliced,
                 fill: false,
             }, {
                 label: 'Growth Factor',
                 fill: false,
                 backgroundColor: window.chartColors.blue,
                 borderColor: window.chartColors.blue,
-                data: x_axis_data__confirmed__growth_factor,
+                data: x_growth_sliced,
             }]
         },
         options: {
@@ -282,6 +289,12 @@ const chart_callback__growth = () => {
             }
         }
     };
+
+
+    // TODO:
+    // 1. Use slice() to extract from [34,:]
+    // 2. Superimpose bar chart (for change)
+    //    on top of line chart
 
     const pill = document.getElementById('pill-3');
     pill.addEventListener('click', () => {
