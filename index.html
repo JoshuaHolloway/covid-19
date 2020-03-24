@@ -18,9 +18,9 @@
 
     <nav>
         <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
-            <a id="pill-1" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
-            <a id="pill-2" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
-            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+            <a id="pill-1" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Linear</a>
+            <a id="pill-2" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Logarithmic</a>
+            <a id="pill-3" class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Growth Factor</a>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -30,7 +30,7 @@
         <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
 			<div style="width:75%;">
-				<canvas id="canvas"></canvas>
+				<canvas id="canvas-linear"></canvas>
 			</div>
 			<br>
 			<br>
@@ -55,7 +55,13 @@
 		<!-- /2nd Tab-Body [logarithmic plot]-->
 
 		<!-- 3rd Tab-Body []-->
-		<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">three</div>
+		<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+
+			<div style="width:75%;">
+				<canvas id="canvas-growth"></canvas>
+			</div>
+
+		</div>
 		<!-- /3rd Tab-Body []-->
     </div>
 
