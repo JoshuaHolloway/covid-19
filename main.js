@@ -40,6 +40,7 @@ fetch(url)
         chart_callback__linear();
         chart_callback__log();
         chart_callback__change();
+        chart_callback__growth();
     });
 //===============================================
 const chart_callback__linear = () => {
@@ -204,7 +205,7 @@ const chart_callback__change = () => {
                 }],
                 yAxes: [{
                     display: true,
-                    type: 'logarithmic',
+                    type: 'linear',
                     scaleLabel: {
                         display: true,
                         labelString: 'Value',
@@ -229,3 +230,69 @@ const chart_callback__change = () => {
 
 };
 //===============================================
+const chart_callback__growth = () => {
+
+    // TODO: Get more accurate with the slice indices
+    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
+    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
+
+    let config = {
+        type: 'bar',
+        data: {
+            labels: y_sliced,
+            datasets: [{
+                label: 'Change',
+                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                data: x_growth_sliced,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Chart.js Line Chart'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: 'linear',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value',
+                    },
+                }]
+            }
+        }
+    };
+
+
+    // TODO:
+    // 1. Use slice() to extract from [34,:]
+    // 2. Superimpose bar chart (for change)
+    //    on top of line chart
+
+    const pill = document.getElementById('pill-4');
+    pill.addEventListener('click', () => {
+        const ctx = document.getElementById('canvas-growth').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+    });
+
+
+};
