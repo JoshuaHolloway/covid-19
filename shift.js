@@ -1,59 +1,51 @@
 // ==============================================
-const size = (x, y) => {
-    if (x.length !== y.length)
-        return null;
-
-    // Ensure odd length
-    if (x.length % 2 === 0)
-        return null;
-
-    const N = x.length;
+const size = y => {
+    const N = y.length;
     return [(N-1) / 2, N];
 };
 // ==============================================
-const shift = (x, y) => {
-
-    const [N_size, N] = size(x, y);
-    const center = [x[N_size], y[N_size]];
-    console.log(center);
-
-    let x_shifted = [];
+const shift = (y, offset, N) => {
     let y_shifted = [];
-    for (let i = 0; i < N; ++i) {
-        x_shifted.push(x[i] - center[0]);
-        y_shifted.push(y[i] - center[1]);
-    }
-
-    return [x_shifted, y_shifted];
+    for (let i = 0; i < N; ++i)
+        y_shifted.push(y[i] - offset);
+    return y_shifted;
 };
 // ==============================================
-const truncate = (x, y) => {
-
-    const [N_size, N] = size(x, y);
-    let x_trunc = [];
+const truncate = (y, N_size) => {
     let y_trunc = [];
-    for (let i = 0; i <= N_size; ++i) {
-        x_trunc.push(x[i]);
+    for (let i = 0; i <= N_size; ++i)
         y_trunc.push(y[i]);
-    }
-    return [x_trunc, y_trunc];
+    return y_trunc;
 };
 // ==============================================
-const mirror = (x_shifted, y_shifted) => {
+const un_offset = (y_mirrored, offset) => {
 
-    [x_shifted, y_shifted] = shift(x, y);
-    [x_trunc, y_trunc] = truncate(x_shifted, y_shifted);
-
-    let y_mirrored = y_trunc.slice();
-    y_mirrored.push(-y_trunc[2]);
-    y_mirrored.push(-y_trunc[1]);
-    y_mirrored.push(-y_trunc[0]);
-
+    y_mirrored.forEach((elem, idx, arr) => {
+        elem += offset;
+    });
     return y_mirrored;
 };
 // ==============================================
-let x = [0,1,2,3,4,5,6];
+const mirror = y => {
+
+    const [N_half, N] = size(y);
+    const offset = y[N_half];
+    console.log('N_half = ' + (N_half-1));    
+
+    const y_shifted = shift(y, offset, N);
+    const y_trunc = truncate(y_shifted, N_half);
+
+    const y_mirrored = y_trunc.slice();
+
+    for (let i = N_half-1; i >= 0; i--) 
+        y_mirrored.push(-y_trunc[i]);
+
+    const y_final = un_offset(y_mirrored, offset);
+
+    return y_final;
+};
+// ==============================================
 let y = [0,1,2,4,6,7,8];
 
-y_mirrored = mirror(x, y);
+y_mirrored = mirror(y);
 console.log(y_mirrored);
