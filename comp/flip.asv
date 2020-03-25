@@ -1,0 +1,12 @@
+x = [1,2,3,0,1];
+
+function [y] = flip(x)
+
+    N = length(x);
+    K = (N-1)/2 + 1;
+    
+    for i = 1:2
+       y(i) = x(k);
+    end
+    
+end
