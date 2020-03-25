@@ -35,6 +35,26 @@ fetch(url)
 
         console.log(data__confirmed__change);
         console.log(data__confirmed__growth_factor);
+
+        const Ep = data__confirmed__growth_factor[data__confirmed__growth_factor.length - 1];
+        const Nd = data__confirmed[data__confirmed.length - 1];
+        // const Nd_1 = Nd + Ep * Nd;
+
+        let Nd_1 = null;
+        if ( Ep > 1.0) {
+            Nd_1 = Nd * Ep;
+        }
+        else {
+            console.log('debug');
+            const factor = 1.0 - Ep;
+            console.log(`factor: ${factor}`);
+
+            Nd_1 = (1 + factor) * Nd;
+            console.log(`Nd_1: ${Nd_1}`);
+        }
+        console.log(`Current Growth Factor: ${Ep}`);
+        console.log(`Number of cases today: ${Nd}`);
+        console.log(`Expected cases tomorrow: ${Nd_1}`);
     })
     .then(() => {
         chart_callback__linear();
