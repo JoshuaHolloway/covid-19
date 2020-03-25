@@ -1,8 +1,8 @@
 const data_arr = [];
 const y_axis_labels = [];
-const x_axis_data__confirmed = [];
-const x_axis_data__confirmed__change = [];
-const x_axis_data__confirmed__growth_factor = [];
+const data__confirmed = [];
+const data__confirmed__change = [];
+const data__confirmed__growth_factor = [];
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 fetch(url)
     .then(res => res.json())
@@ -13,34 +13,45 @@ fetch(url)
         data.US.forEach((elem, idx, arr) => {
             data_arr.push(elem);
             y_axis_labels.push(elem.date);
-            x_axis_data__confirmed.push(elem.confirmed);
+            data__confirmed.push(elem.confirmed);
         });
 
-        for (let i = 1; i < x_axis_data__confirmed.length; ++i) {
-            const x0 = x_axis_data__confirmed[i-1];
-            const x1 = x_axis_data__confirmed[i];
+        for (let i = 1; i < data__confirmed.length; ++i) {
+            const x0 = data__confirmed[i-1];
+            const x1 = data__confirmed[i];
             const dx = x1 - x0;
-            x_axis_data__confirmed__change.push(dx);
+            data__confirmed__change.push(dx);
         }
 
-        for (let i = 1; i < x_axis_data__confirmed__change.length; ++i) {
-            const dx0 = x_axis_data__confirmed__change[i-1];
-            const dx1 = x_axis_data__confirmed__change[i];
+        for (let i = 1; i < data__confirmed__change.length; ++i) {
+            const dx0 = data__confirmed__change[i-1];
+            const dx1 = data__confirmed__change[i];
             const growth_factor = dx1 / dx0;
             if (growth_factor < 1e3)
-                x_axis_data__confirmed__growth_factor.push(growth_factor);
+                data__confirmed__growth_factor.push(growth_factor);
             else
-                x_axis_data__confirmed__growth_factor.push(null);
+                data__confirmed__growth_factor.push(null);
         }
 
-        console.log(x_axis_data__confirmed__change);
-        console.log(x_axis_data__confirmed__growth_factor);
+        console.log(data__confirmed__change);
+        console.log(data__confirmed__growth_factor);
     })
     .then(() => {
         chart_callback__linear();
         chart_callback__log();
         chart_callback__change();
         chart_callback__growth();
+
+        chart_callback__linear_mirror();
+
+        console.log('data__confirmed:');
+        console.log(data__confirmed);
+
+
+        // mirrored = mirror(data__confirmed);
+        // console.log('mirrored:');
+        // console.log(mirrored);
+
     });
 //===============================================
 const chart_callback__linear = () => {
@@ -53,7 +64,7 @@ const chart_callback__linear = () => {
                 label: 'Total Confirmed Cases',
                 backgroundColor: window.chartColors.red,
                 borderColor: window.chartColors.red,
-                data: x_axis_data__confirmed,
+                data: data__confirmed,
                 fill: false,
             }]
         },
@@ -105,6 +116,66 @@ const chart_callback__linear = () => {
     });
 };
 //===============================================
+const chart_callback__linear_mirror = () => {
+
+    const debug_labels = [];
+    for (let i = 0; i < 2 * y_axis_labels.length; i++)
+        debug_labels.push(i);
+
+    let config = {
+        type: 'line',
+        data: {
+            labels: debug_labels,
+            datasets: [{
+                label: 'Total Confirmed Cases',
+                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                data: mirror(data__confirmed),
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'United States Total Confirmed Cases'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: 'linear',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value',
+                    },
+                }]
+            }
+        }
+    };
+
+    // If clicked on then update window display
+    const pill = document.getElementById('pill-5');
+    pill.addEventListener('click', () => {
+        const ctx = document.getElementById('canvas-mirror').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+    });
+};
+//===============================================
 const chart_callback__log = () => {
     let config = {
         type: 'line',
@@ -114,7 +185,7 @@ const chart_callback__log = () => {
                 label: 'My First dataset',
                 backgroundColor: window.chartColors.red,
                 borderColor: window.chartColors.red,
-                data: x_axis_data__confirmed,
+                data: data__confirmed,
                 fill: false,
             }]
         },
@@ -165,9 +236,9 @@ const chart_callback__change = () => {
 
     // TODO: Get more accurate with the slice indices
     const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
-    const x_change_sliced = x_axis_data__confirmed__change.slice(0,
-                            x_axis_data__confirmed__change.length);
-    // const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
+    const x_change_sliced = data__confirmed__change.slice(0,
+                            data__confirmed__change.length);
+    // const x_growth_sliced = data__confirmed__growth_factor.slice(0, data__confirmed__growth_factor.length);
 
     let config = {
         type: 'bar',
@@ -234,7 +305,7 @@ const chart_callback__growth = () => {
 
     // TODO: Get more accurate with the slice indices
     const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
-    const x_growth_sliced = x_axis_data__confirmed__growth_factor.slice(0, x_axis_data__confirmed__growth_factor.length);
+    const x_growth_sliced = data__confirmed__growth_factor.slice(0, data__confirmed__growth_factor.length);
 
     let config = {
         type: 'bar',

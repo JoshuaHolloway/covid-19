@@ -1,9 +1,3 @@
-clc, clear, close all;
-
-x = [1,2,3,4,0,0,0];
-x = do_flip(x);
-stem(x, 'fill', 'k');
-
 function [x] = do_flip(x)
 
     N = length(x);
