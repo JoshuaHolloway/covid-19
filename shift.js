@@ -18,11 +18,10 @@ const truncate = (y, N_size) => {
     return y_trunc;
 };
 // ==============================================
-const un_offset = (y_mirrored, offset) => {
+const un_offset = (y_mirrored, offset, N) => {
 
-    y_mirrored.forEach((elem, idx, arr) => {
-        elem += offset;
-    });
+    for (let i = 0; i < N; i++)
+        y_mirrored[i] += offset;
     return y_mirrored;
 };
 // ==============================================
@@ -30,7 +29,6 @@ const mirror = y => {
 
     const [N_half, N] = size(y);
     const offset = y[N_half];
-    console.log('N_half = ' + (N_half-1));    
 
     const y_shifted = shift(y, offset, N);
     const y_trunc = truncate(y_shifted, N_half);
@@ -40,7 +38,7 @@ const mirror = y => {
     for (let i = N_half-1; i >= 0; i--) 
         y_mirrored.push(-y_trunc[i]);
 
-    const y_final = un_offset(y_mirrored, offset);
+    const y_final = un_offset(y_mirrored, offset, N);
 
     return y_final;
 };
