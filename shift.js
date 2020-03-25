@@ -16,12 +16,15 @@ const mirror = y => {
     const N = y.length;
     const offset = y[N-1];
     const y_shifted = shift(y, offset);
-    for (let i = N/2; i >= 0; i--) 
+    console.log(y_shifted);
+
+
+    for (let i = Math.ceil(N/2)-1; i >= 0; i--) 
         y_shifted.push(-y_shifted[i]);
     return un_offset(y_shifted, offset, N);
 };
 // ==============================================
 let y_gold = [0,1,2,4,6,7,8];
-let y = [0,1,2,4];
+let y = [0,1,1,2,4];
 y_mirrored = mirror(y);
 console.log(y_mirrored);
