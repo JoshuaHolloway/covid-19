@@ -104,6 +104,8 @@ async function get_data() {
     document.getElementById('cases-text-predicted').innerHTML = 
         `Expected Total Cases Tomorrow: ${Nd_1}`;
     
+    document.getElementById('cases-text-growth-factor').innerHTML = 
+        `Current Growth Factor: ${Ep.toFixed(3)}`;
 }
 //===============================================
 const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
