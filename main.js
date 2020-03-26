@@ -52,33 +52,6 @@ async function get_data() {
     console.log(`Expected cases tomorrow: ${Nd_1}`);
 }
 
-
-// fetch(url)
-//     .then(res => res.json())
-//     .then(data => {
-
-//         console.log(data.US);
-
-
-//     })
-//     .then(() => {
-        
-//         chart_callback__log();
-//         chart_callback__change();
-//         chart_callback__growth();
-
-//         chart_callback__linear_mirror();
-//         chart_callback__linear();
-
-//         console.log('data__confirmed:');
-//         console.log(data__confirmed);
-
-
-//         // mirrored = mirror(data__confirmed);
-//         // console.log('mirrored:');
-//         // console.log(mirrored);
-
-//     })
 //     .catch(error => {
 //         console.log('JOSH: ERROR!!!');
 //         console.log(error);
@@ -141,6 +114,14 @@ async function chart_it() {
     const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
     window.myLine = new Chart(ctx_linear, config);
     console.log('JOSH');
+
+
+    chart_callback__log();
+    chart_callback__change();
+    chart_callback__growth();
+
+    chart_callback__linear_mirror();
+    chart_callback__linear();
 }
 
 
