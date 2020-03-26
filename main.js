@@ -92,12 +92,19 @@ async function get_data() {
         const factor = 1.0 - Ep;
         Nd_1 = (1 + factor) * Nd;
     }
+    Nd_1 = Math.round(Nd_1);
+
     console.log(`Current Growth Factor: ${Ep}`);
     console.log(`Number of cases today: ${Nd}`);
     console.log(`Expected cases tomorrow: ${Nd_1}`);
+
+    document.getElementById('cases-text-current').innerHTML = 
+        `Total Confirmed Cases: ${Nd}`;
+
+    document.getElementById('cases-text-predicted').innerHTML = 
+        `Expected Total Cases Tomorrow: ${Nd_1}`;
+    
 }
-
-
 //===============================================
 const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
 async function chart_it() {
@@ -114,13 +121,11 @@ async function chart_it() {
     chart_callback__linear_mirror();
     chart_callback__linear();
 }
-
-
-
+//===============================================
 const chart_callback__linear = () => {
     // If clicked on then update window display
     document.getElementById('pill-1').addEventListener('click', () => {
-        new Chart(ctx_linear, config);
+        new Chart(ctx_linear, config_linear);
     });
 };
 //===============================================
