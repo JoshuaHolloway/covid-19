@@ -4,10 +4,55 @@ const data__confirmed = [];
 const data__confirmed__change = [];
 const data__confirmed__growth_factor = [];
 const url = 'https://pomber.github.io/covid19/timeseries.json';
-
-
-chart_it();
-
+//===============================================
+let config_linear = {
+    type: 'line',
+    data: {
+        labels: y_axis_labels,
+        datasets: [{
+            label: 'Total Confirmed Cases',
+            backgroundColor: window.chartColors.red,
+            borderColor: window.chartColors.red,
+            data: data__confirmed,
+            fill: false,
+        }]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'United States Total Confirmed Cases'
+        },
+        tooltips: {
+            mode: 'index',
+            intersect: false,
+        },
+        hover: {
+            mode: 'nearest',
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Month'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                type: 'linear',
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Value',
+                },
+            }]
+        }
+    }
+};
+//===============================================
+chart_it().catch(err => console.log(err));
+//===============================================
 async function get_data() {
     const resp = await fetch(url);
     const data = await resp.json();
@@ -52,69 +97,16 @@ async function get_data() {
     console.log(`Expected cases tomorrow: ${Nd_1}`);
 }
 
-//     .catch(error => {
-//         console.log('JOSH: ERROR!!!');
-//         console.log(error);
-//     });
-//===============================================
 
+//===============================================
 async function chart_it() {
 
-    console.log('BEFORE get_data()');
-    await get_data();
-    console.log('AFTER get_data()');
+    await get_data().catch(err => console.log(err));
 
-    let config = {
-        type: 'line',
-        data: {
-            labels: y_axis_labels,
-            datasets: [{
-                label: 'Total Confirmed Cases',
-                backgroundColor: window.chartColors.red,
-                borderColor: window.chartColors.red,
-                data: data__confirmed,
-                fill: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: 'United States Total Confirmed Cases'
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    type: 'linear',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Value',
-                    },
-                }]
-            }
-        }
-    };
-
-    // Update display on window load
+    // Display display to first tab
     const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
-    window.myLine = new Chart(ctx_linear, config);
+    window.myLine = new Chart(ctx_linear, config_linear);
     console.log('JOSH');
-
 
     chart_callback__log();
     chart_callback__change();
