@@ -95,17 +95,39 @@ async function get_data() {
     Nd_1 = Math.round(Nd_1);
 
     console.log(`Current Growth Factor: ${Ep}`);
-    console.log(`Number of cases today: ${Nd}`);
-    console.log(`Expected cases tomorrow: ${Nd_1}`);
+    console.log(`Number of cases yesterday: ${Nd}`);
+    console.log(`Expected cases today ${Nd_1}`);
 
+    const date = y_axis_labels[y_axis_labels.length-1];
     document.getElementById('cases-text-current').innerHTML = 
-        `Total Confirmed Cases: ${Nd}`;
+        `Total Confirmed Cases Yesderday (${date}): ${Nd}`;
 
+    const x = date.split('-');
+    console.log(x);
     document.getElementById('cases-text-predicted').innerHTML = 
-        `Expected Total Cases Tomorrow: ${Nd_1}`;
+        `<u>Expected Total Cases Today</u> (${x[0]}-${x[1]}-${parseInt(x[2],10)+1}): 
+            <u><b>${Nd_1}</b></u>`;
     
     document.getElementById('cases-text-growth-factor').innerHTML = 
-        `Current Growth Factor: ${Ep.toFixed(3)}`;
+        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${Ep.toFixed(3)}`;
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    document.getElementById('randomizeData').addEventListener('click', function() {
+        config.data.datasets.forEach(function(dataset) {
+            dataset.data = dataset.data.map(function() {
+                return randomScalingFactor();
+            });
+        });
+        window.myLine.update();
+    });
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 //===============================================
 const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
