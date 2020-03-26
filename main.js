@@ -4,77 +4,92 @@ const data__confirmed = [];
 const data__confirmed__change = [];
 const data__confirmed__growth_factor = [];
 const url = 'https://pomber.github.io/covid19/timeseries.json';
-fetch(url)
-    .then(res => res.json())
-    .then(data => {
-
-        console.log(data.US);
-
-        data.US.forEach((elem, idx, arr) => {
-            data_arr.push(elem);
-            y_axis_labels.push(elem.date);
-            data__confirmed.push(elem.confirmed);
-        });
-
-        for (let i = 1; i < data__confirmed.length; ++i) {
-            const x0 = data__confirmed[i-1];
-            const x1 = data__confirmed[i];
-            const dx = x1 - x0;
-            data__confirmed__change.push(dx);
-        }
-
-        for (let i = 1; i < data__confirmed__change.length; ++i) {
-            const dx0 = data__confirmed__change[i-1];
-            const dx1 = data__confirmed__change[i];
-            const growth_factor = dx1 / dx0;
-            if (growth_factor < 1e3)
-                data__confirmed__growth_factor.push(growth_factor);
-            else
-                data__confirmed__growth_factor.push(null);
-        }
-
-        console.log(data__confirmed__change);
-        console.log(data__confirmed__growth_factor);
-
-        const Ep = data__confirmed__growth_factor[data__confirmed__growth_factor.length - 1];
-        const Nd = data__confirmed[data__confirmed.length - 1];
-        // const Nd_1 = Nd + Ep * Nd;
-
-        let Nd_1 = null;
-        if ( Ep > 1.0) {
-            Nd_1 = Nd * Ep;
-        }
-        else {
-            console.log('debug');
-            const factor = 1.0 - Ep;
-            console.log(`factor: ${factor}`);
-
-            Nd_1 = (1 + factor) * Nd;
-            console.log(`Nd_1: ${Nd_1}`);
-        }
-        console.log(`Current Growth Factor: ${Ep}`);
-        console.log(`Number of cases today: ${Nd}`);
-        console.log(`Expected cases tomorrow: ${Nd_1}`);
-    })
-    .then(() => {
-        chart_callback__linear();
-        chart_callback__log();
-        chart_callback__change();
-        chart_callback__growth();
-
-        chart_callback__linear_mirror();
-
-        console.log('data__confirmed:');
-        console.log(data__confirmed);
 
 
-        // mirrored = mirror(data__confirmed);
-        // console.log('mirrored:');
-        // console.log(mirrored);
+chart_it();
 
+async function get_data() {
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    data.US.forEach((elem, idx, arr) => {
+        data_arr.push(elem);
+        y_axis_labels.push(elem.date);
+        data__confirmed.push(elem.confirmed);
     });
+
+    for (let i = 1; i < data__confirmed.length; ++i) {
+        const x0 = data__confirmed[i-1];
+        const x1 = data__confirmed[i];
+        const dx = x1 - x0;
+        data__confirmed__change.push(dx);
+    }
+
+    for (let i = 1; i < data__confirmed__change.length; ++i) {
+        const dx0 = data__confirmed__change[i-1];
+        const dx1 = data__confirmed__change[i];
+        const growth_factor = dx1 / dx0;
+        if (growth_factor < 1e3)
+            data__confirmed__growth_factor.push(growth_factor);
+        else
+            data__confirmed__growth_factor.push(null);
+    }
+
+    const Ep = data__confirmed__growth_factor[data__confirmed__growth_factor.length - 1];
+    const Nd = data__confirmed[data__confirmed.length - 1];
+    // const Nd_1 = Nd + Ep * Nd;
+
+    let Nd_1 = null;
+    if ( Ep > 1.0) {
+        Nd_1 = Nd * Ep;
+    }
+    else {
+        const factor = 1.0 - Ep;
+        Nd_1 = (1 + factor) * Nd;
+    }
+    console.log(`Current Growth Factor: ${Ep}`);
+    console.log(`Number of cases today: ${Nd}`);
+    console.log(`Expected cases tomorrow: ${Nd_1}`);
+}
+
+
+// fetch(url)
+//     .then(res => res.json())
+//     .then(data => {
+
+//         console.log(data.US);
+
+
+//     })
+//     .then(() => {
+        
+//         chart_callback__log();
+//         chart_callback__change();
+//         chart_callback__growth();
+
+//         chart_callback__linear_mirror();
+//         chart_callback__linear();
+
+//         console.log('data__confirmed:');
+//         console.log(data__confirmed);
+
+
+//         // mirrored = mirror(data__confirmed);
+//         // console.log('mirrored:');
+//         // console.log(mirrored);
+
+//     })
+//     .catch(error => {
+//         console.log('JOSH: ERROR!!!');
+//         console.log(error);
+//     });
 //===============================================
-const chart_callback__linear = () => {
+
+async function chart_it() {
+
+    console.log('BEFORE get_data()');
+    await get_data();
+    console.log('AFTER get_data()');
 
     let config = {
         type: 'line',
@@ -122,17 +137,19 @@ const chart_callback__linear = () => {
         }
     };
 
-
     // Update display on window load
-     const ctx = document.getElementById('canvas-linear').getContext('2d');
-    window.onload = function() {
-        window.myLine = new Chart(ctx, config);
-    };
+    const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
+    window.myLine = new Chart(ctx_linear, config);
+    console.log('JOSH');
+}
 
+
+
+const chart_callback__linear = () => {
     // If clicked on then update window display
     const pill = document.getElementById('pill-1');
     pill.addEventListener('click', () => {
-        window.myLine = new Chart(ctx, config);
+        window.myLine = new Chart(ctx_linear, config);
     });
 };
 //===============================================
@@ -402,3 +419,4 @@ const chart_callback__growth = () => {
 
 
 };
+//===============================================
