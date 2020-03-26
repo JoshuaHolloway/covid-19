@@ -99,14 +99,13 @@ async function get_data() {
 
 
 //===============================================
+const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
 async function chart_it() {
 
     await get_data().catch(err => console.log(err));
 
     // Display display to first tab
-    const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
-    window.myLine = new Chart(ctx_linear, config_linear);
-    console.log('JOSH');
+    new Chart(ctx_linear, config_linear);
 
     chart_callback__log();
     chart_callback__change();
@@ -120,9 +119,8 @@ async function chart_it() {
 
 const chart_callback__linear = () => {
     // If clicked on then update window display
-    const pill = document.getElementById('pill-1');
-    pill.addEventListener('click', () => {
-        window.myLine = new Chart(ctx_linear, config);
+    document.getElementById('pill-1').addEventListener('click', () => {
+        new Chart(ctx_linear, config);
     });
 };
 //===============================================
@@ -179,10 +177,9 @@ const chart_callback__linear_mirror = () => {
     };
 
     // If clicked on then update window display
-    const pill = document.getElementById('pill-5');
-    pill.addEventListener('click', () => {
+    document.getElementById('pill-5').addEventListener('click', () => {
         const ctx = document.getElementById('canvas-mirror').getContext('2d');
-        window.myLine = new Chart(ctx, config);
+        new Chart(ctx, config);
     });
 };
 //===============================================
@@ -233,10 +230,9 @@ const chart_callback__log = () => {
         }
     };
 
-    const pill = document.getElementById('pill-2');
-    pill.addEventListener('click', () => {
+    document.getElementById('pill-2').addEventListener('click', () => {
         const ctx = document.getElementById('canvas-log').getContext('2d');
-        window.myLine = new Chart(ctx, config);
+        new Chart(ctx, config);
     });
 
 
@@ -248,7 +244,6 @@ const chart_callback__change = () => {
     const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
     const x_change_sliced = data__confirmed__change.slice(0,
                             data__confirmed__change.length);
-    // const x_growth_sliced = data__confirmed__growth_factor.slice(0, data__confirmed__growth_factor.length);
 
     let config = {
         type: 'bar',
@@ -296,19 +291,10 @@ const chart_callback__change = () => {
         }
     };
 
-
-    // TODO:
-    // 1. Use slice() to extract from [34,:]
-    // 2. Superimpose bar chart (for change)
-    //    on top of line chart
-
-    const pill = document.getElementById('pill-3');
-    pill.addEventListener('click', () => {
+    document.getElementById('pill-3').addEventListener('click', () => {
         const ctx = document.getElementById('canvas-change').getContext('2d');
-        window.myLine = new Chart(ctx, config);
+        new Chart(ctx, config);
     });
-
-
 };
 //===============================================
 const chart_callback__growth = () => {
@@ -378,18 +364,9 @@ const chart_callback__growth = () => {
         }
     };
 
-
-    // TODO:
-    // 1. Use slice() to extract from [34,:]
-    // 2. Superimpose bar chart (for change)
-    //    on top of line chart
-
-    const pill = document.getElementById('pill-4');
-    pill.addEventListener('click', () => {
+    document.getElementById('pill-4').addEventListener('click', () => {
         const ctx = document.getElementById('canvas-growth').getContext('2d');
-        window.myLine = new Chart(ctx, config);
+        new Chart(ctx, config);
     });
-
-
 };
 //===============================================
