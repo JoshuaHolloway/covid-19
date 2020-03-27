@@ -78,9 +78,6 @@
 		</svg>
 	</a>
 
-
-	<button id="randomizeData">Randomize Data</button>
-
 	<div class="container-fluid" style="padding: 10px 100px 10px 100px">
 
 		<div class="row">
@@ -92,62 +89,27 @@
 
 				<nav>
 					<div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
-						<a id="pill-1" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Linear</a>
-						<a id="pill-2" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Logarithmic</a>
-						<a id="pill-3" class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Change</a>		
-						<a id="pill-4" class="nav-item nav-link" id="nav-growth-tab" data-toggle="tab" href="#nav-growth" role="tab" aria-controls="nav-growth" aria-selected="false">Growth Factor</a>
-						<a id="pill-5" class="nav-item nav-link" id="nav-predict-tab" data-toggle="tab" href="#nav-predict" role="tab" aria-controls="nav-predict" aria-selected="false">Predict</a>
+
+						<!-- pill-1 -->
+						<div id="pill-linear"class="nav-item nav-link active" data-toggle="tab">Linear</div>	
+						<!-- /pill-1 -->
+
+						<!-- pill-2 -->
+						<div id="pill-change"class="nav-item nav-link" data-toggle="tab">Change</div>
+						<!-- /pill-2 -->
+
 					</div>
 				</nav>
 
 				<div class="tab-content" id="nav-tabContent">
 
 					<!-- 1st Tab-Body -->
-					<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+					<!-- <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> -->
 						<div style="width:75%;">
-							<canvas id="canvas-linear"></canvas>
+							<canvas id="canvas"></canvas>
 						</div>
-					</div>
+					<!-- </div> -->
 					<!-- /1st Tab-Body -->
-
-
-					<!-- 2nd Tab-Body [logarithmic plot] -->
-					<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-						<div style="width:75%;">
-							<canvas id="canvas-log"></canvas>
-						</div>
-					</div>
-					<!-- /2nd Tab-Body [logarithmic plot]-->
-
-					<!-- 3rd Tab-Body []-->
-					<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-						<div style="width:75%;">
-							<canvas id="canvas-change"></canvas>
-						</div>
-					</div>
-					<!-- /3rd Tab-Body []-->
-
-					<!-- 4th Tab-Body []-->
-					<div class="tab-pane fade" id="nav-growth" role="tabpanel" aria-labelledby="nav-contact-tab">
-						<div style="width:75%;">
-							<canvas id="canvas-growth"></canvas>
-						</div>
-					</div>
-					<!-- /4th Tab-Body []-->
-
-					<!-- 5th Tab-Body -->
-					<div class="tab-pane fade show active" id="nav-predict" role="tabpanel" aria-labelledby="nav-predict-tab">
-						<!-- <h4>
-							<b>NOTE:</b> The data in this tab is simply mirroring the data up to this point in time.
-						</h4>
-						<h5>
-							In other words, this graph provides an estimate of the <u><b>best case scenario</b></u> (i.e. assume tomorrow is the <a href="https://youtu.be/Kas0tIxDvrg?t=303">Inflection Point</a>).
-						</h5> -->
-						<div style="width:75%;">
-							<canvas id="canvas-mirror"></canvas>
-						</div>
-					</div>
-					<!-- /5th Tab-Body -->
 
 				</div>
 				<!-- /.tab-content -->

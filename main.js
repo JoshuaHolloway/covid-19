@@ -5,7 +5,7 @@ const data__confirmed__change = [];
 const data__confirmed__growth_factor = [];
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
-let config_linear = {
+let config = {
     type: 'line',
     data: {
         labels: y_axis_labels,
@@ -13,7 +13,7 @@ let config_linear = {
             label: 'Total Confirmed Cases',
             backgroundColor: window.chartColors.red,
             borderColor: window.chartColors.red,
-            data: data__confirmed,
+            data: null,
             fill: false,
         }]
     },
@@ -51,7 +51,21 @@ let config_linear = {
     }
 };
 //===============================================
-chart_it().catch(err => console.log(err));
+const initialize_graph = (data_set) => {
+    config.data.datasets[0].data = data_set;
+    var ctx = document.getElementById('canvas').getContext('2d');
+    window.myLine = new Chart(ctx, config);
+};
+//===============================================
+const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=y_axis_labels) => {
+    config.options.scales.yAxes.type = y_scale_type;
+    config.data.labels = y_labels;
+    config.type = graph_type;
+    config.data.datasets[0].data = data_set;
+    window.myLine.update();
+};
+//===============================================
+use_data().catch(err => console.log(err));
 //===============================================
 async function get_data() {
     const resp = await fetch(url);
@@ -111,160 +125,28 @@ async function get_data() {
     document.getElementById('cases-text-growth-factor').innerHTML = 
         `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${Ep.toFixed(3)}`;
 
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    document.getElementById('randomizeData').addEventListener('click', function() {
-        config.data.datasets.forEach(function(dataset) {
-            dataset.data = dataset.data.map(function() {
-                return randomScalingFactor();
-            });
-        });
-        window.myLine.update();
-    });
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 //===============================================
-const ctx_linear = document.getElementById('canvas-linear').getContext('2d');
-async function chart_it() {
+async function use_data() {
 
+    // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
-    // Display display to first tab
-    new Chart(ctx_linear, config_linear);
+    // Initialize graph
+    initialize_graph(data__confirmed);
 
-    chart_callback__log();
-    chart_callback__change();
-    chart_callback__growth();
-
-    chart_callback__linear_mirror();
+    // Setup click-callbaks
     chart_callback__linear();
+    chart_callback__change();
 }
 //===============================================
 const chart_callback__linear = () => {
-    // If clicked on then update window display
-    document.getElementById('pill-1').addEventListener('click', () => {
-        new Chart(ctx_linear, config_linear);
-    });
-};
-//===============================================
-const chart_callback__linear_mirror = () => {
-
-    const debug_labels = [];
-    for (let i = 0; i < 2 * y_axis_labels.length; i++)
-        debug_labels.push(i);
-
-    let config = {
-        type: 'line',
-        data: {
-            labels: debug_labels,
-            datasets: [{
-                label: 'Total Confirmed Cases',
-                backgroundColor: window.chartColors.red,
-                borderColor: window.chartColors.red,
-                data: mirror(data__confirmed),
-                fill: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: 'United States Total Confirmed Cases'
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    type: 'linear',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Value',
-                    },
-                }]
-            }
-        }
-    };
 
     // If clicked on then update window display
-    document.getElementById('pill-5').addEventListener('click', () => {
-        const ctx = document.getElementById('canvas-mirror').getContext('2d');
-        new Chart(ctx, config);
+    const pill = document.getElementById('pill-linear');
+    pill.addEventListener('click', () => {
+        update_graph(data__confirmed, 'line');
     });
-};
-//===============================================
-const chart_callback__log = () => {
-    let config = {
-        type: 'line',
-        data: {
-            labels: y_axis_labels,
-            datasets: [{
-                label: 'My First dataset',
-                backgroundColor: window.chartColors.red,
-                borderColor: window.chartColors.red,
-                data: data__confirmed,
-                fill: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: 'Chart.js Line Chart'
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    type: 'logarithmic',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Value',
-                    },
-                }]
-            }
-        }
-    };
-
-    document.getElementById('pill-2').addEventListener('click', () => {
-        const ctx = document.getElementById('canvas-log').getContext('2d');
-        new Chart(ctx, config);
-    });
-
-
 };
 //===============================================
 const chart_callback__change = () => {
@@ -274,128 +156,10 @@ const chart_callback__change = () => {
     const x_change_sliced = data__confirmed__change.slice(0,
                             data__confirmed__change.length);
 
-    let config = {
-        type: 'bar',
-        data: {
-            labels: y_sliced,
-            datasets: [{
-                label: 'Change',
-                backgroundColor: window.chartColors.red,
-                borderColor: window.chartColors.red,
-                data: x_change_sliced,
-                fill: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: 'Chart.js Line Chart'
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    type: 'linear',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Value',
-                    },
-                }]
-            }
-        }
-    };
+    const pill = document.getElementById('pill-change');
+    pill.addEventListener('click', () => {
 
-    document.getElementById('pill-3').addEventListener('click', () => {
-        const ctx = document.getElementById('canvas-change').getContext('2d');
-        new Chart(ctx, config);
-    });
-};
-//===============================================
-const chart_callback__growth = () => {
-
-    // TODO: Get more accurate with the slice indices
-    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
-    const x_growth_sliced = data__confirmed__growth_factor.slice(0, data__confirmed__growth_factor.length);
-
-    let config = {
-        type: 'bar',
-        data: {
-            labels: y_sliced,
-            datasets: [{
-                label: 'Change',
-                backgroundColor: window.chartColors.red,
-                borderColor: window.chartColors.red,
-                data: x_growth_sliced,
-                fill: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: 'Chart.js Line Chart'
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    type: 'linear',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Value',
-                    },
-                }]
-            },
-            // https://github.com/chartjs/chartjs-plugin-annotation
-            annotation: {
-                annotations: [{
-                    type: 'line',
-                    mode: 'horizontal',
-                    scaleID: 'y-axis-0',
-                    value: 1,
-                    borderColor: 'rgb(75, 192, 192)',
-                    borderWidth: 4,
-                    label: {
-                    enabled: false,
-                    content: 'Test label'
-                    }
-                }]
-            }
-        }
-    };
-
-    document.getElementById('pill-4').addEventListener('click', () => {
-        const ctx = document.getElementById('canvas-growth').getContext('2d');
-        new Chart(ctx, config);
+        update_graph(x_change_sliced, 'bar');
     });
 };
 //===============================================
