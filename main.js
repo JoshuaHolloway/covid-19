@@ -79,11 +79,13 @@ let config = {
 };
 //===============================================
 const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=y_axis_labels) => {
-    config.options.scales.yAxes.type = y_scale_type;
+    config.options.scales.yAxes[0].type = y_scale_type;
     config.data.labels = y_labels;
     config.type = graph_type;
     config.data.datasets[0].data = data_set;
     window.myLine.update();
+
+    console.log(config);
 };
 //===============================================
 setup_charts().catch(err => console.log(err));
@@ -171,17 +173,11 @@ async function setup_charts() {
 
     // Initialize graph
     const initialize_graph = _ => {
-
         var ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, config);
-
         update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
     };
-    //initialize_graph(data__confirmed);
-    initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);
-    console.log(confirmed.get_x()[0]);
-    console.log(confirmed.get_x()[1]);
-    
+    initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
     // Setup click-callbaks
     chart_callback__linear();
@@ -199,16 +195,9 @@ const chart_callback__linear = () => {
 //===============================================
 const chart_callback__change = () => {
 
-    // TODO: Get more accurate with the slice indices
-    const delay = 0;
-    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length-delay);
-    const x_change_sliced = data__confirmed__change.slice(0,
-                            data__confirmed__change.length);
-
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
-
-        update_graph(x_change_sliced, 'bar', y_sliced);
+        update_graph(confirmed.get_dx()[0], 'bar', 'logarithmic', confirmed.get_dx()[1]);
     });
 };
 //===============================================
