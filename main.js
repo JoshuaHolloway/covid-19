@@ -39,7 +39,7 @@ let config = {
     data: {
         labels: null,
         datasets: [{
-            label: 'Total Confirmed Cases',
+            label: null,
             backgroundColor: window.chartColors.red,
             borderColor: window.chartColors.red,
             data: null,
@@ -49,8 +49,8 @@ let config = {
     options: {
         responsive: true,
         title: {
-            display: true,
-            text: 'United States Total Confirmed Cases'
+            display: false,
+            text: null
         },
         tooltips: {
             mode: 'index',
@@ -80,7 +80,11 @@ let config = {
     }
 };
 //===============================================
-const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1]) => {
+const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
+    config.options.title.text = title;
+    config.data.datasets[0].label = label;
+    config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+
     config.options.scales.yAxes[0].type = y_scale_type;
     config.data.labels = y_labels;
     config.type = graph_type;
@@ -172,7 +176,7 @@ async function setup_charts() {
     const initialize_graph = _ => {
         var ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, config);
-        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
+        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
     };
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
