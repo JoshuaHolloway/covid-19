@@ -170,11 +170,12 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize graph
-    const initialize_graph = (data_set, data_labels) => {
-        config.data.datasets[0].data = data_set;
-        config.data.datasets[0].labels = data_labels;
+    const initialize_graph = _ => {
+
         var ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, config);
+
+        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
     };
     //initialize_graph(data__confirmed);
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);
