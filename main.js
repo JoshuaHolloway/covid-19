@@ -5,10 +5,37 @@ const data__confirmed__change = [];
 const data__confirmed__growth_factor = [];
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
+const confirmed = {
+    x: [],
+    dx: [],
+    qx: [],
+    get_x: function() {
+        return[this.x.map(v => v.val),  this.x.map(v => v.date)];
+    },
+    get_dx: function() {
+        return [this.dx.map(v => v.val), this.dx.map(v => v.date)];
+    },
+    get_qx: function() {
+        return [this.qx.map(v => v.val), this.qx.map(v => v.date)];
+    }
+};
+//===============================================
+const deaths = {
+    x: [{ date: '', val: null}],
+    dx: [{ date: '', val: null}],
+    qx: [{ date: '', val: null}]
+};
+//===============================================
+const recovered = {
+    x: [{ date: '', val: null}],
+    dx: [{ date: '', val: null}],
+    qx: [{ date: '', val: null}]
+};
+//===============================================
 let config = {
     type: 'line',
     data: {
-        labels: y_axis_labels,
+        // labels: null,
         datasets: [{
             label: 'Total Confirmed Cases',
             backgroundColor: window.chartColors.red,
@@ -51,12 +78,6 @@ let config = {
     }
 };
 //===============================================
-const initialize_graph = (data_set) => {
-    config.data.datasets[0].data = data_set;
-    var ctx = document.getElementById('canvas').getContext('2d');
-    window.myLine = new Chart(ctx, config);
-};
-//===============================================
 const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=y_axis_labels) => {
     config.options.scales.yAxes.type = y_scale_type;
     config.data.labels = y_labels;
@@ -65,33 +86,51 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=y_ax
     window.myLine.update();
 };
 //===============================================
-use_data().catch(err => console.log(err));
+setup_charts().catch(err => console.log(err));
 //===============================================
 async function get_data() {
     const resp = await fetch(url);
     const data = await resp.json();
 
+    // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
         data_arr.push(elem);
         y_axis_labels.push(elem.date);
         data__confirmed.push(elem.confirmed);
+
+        confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
+        deaths.x.push({'date': elem.date, 'val': elem.deaths});
+        recovered.x.push({'date': elem.date, 'val': elem.recovered});
     });
 
+    // [dx] Change
     for (let i = 1; i < data__confirmed.length; ++i) {
-        const x0 = data__confirmed[i-1];
-        const x1 = data__confirmed[i];
+        //const x0 = data__confirmed[i-1];
+        const x0 = confirmed.x[i-1].val;
+
+        //const x1 = data__confirmed[i];
+        const x1 = confirmed.x[i].val;
+        const date_x1 = confirmed.x[i].date;
         const dx = x1 - x0;
         data__confirmed__change.push(dx);
+        confirmed.dx.push({'date': date_x1, 'val': dx});
     }
 
+    // [qx] Growth Factor
     for (let i = 1; i < data__confirmed__change.length; ++i) {
-        const dx0 = data__confirmed__change[i-1];
-        const dx1 = data__confirmed__change[i];
-        const growth_factor = dx1 / dx0;
-        if (growth_factor < 1e3)
-            data__confirmed__growth_factor.push(growth_factor);
-        else
-            data__confirmed__growth_factor.push(null);
+        //const dx0 = data__confirmed__change[i-1];
+        const dx0 = confirmed.dx[i-1].val;
+        
+        //const dx1 = data__confirmed__change[i];
+        const dx1 = confirmed.dx[i].val;
+        const date_dx1 = confirmed.dx[i].date;
+        
+        let growth_factor = dx1 / dx0;
+        if (growth_factor > 1e3)
+            growth_factor = null;
+        
+        data__confirmed__growth_factor.push(growth_factor);
+        confirmed.qx.push({date: date_dx1, val: growth_factor});
     }
 
     const Ep = data__confirmed__growth_factor[data__confirmed__growth_factor.length - 1];
@@ -99,25 +138,23 @@ async function get_data() {
     // const Nd_1 = Nd + Ep * Nd;
 
     let Nd_1 = null;
-    if ( Ep > 1.0) {
+    if ( Ep > 1.0)
         Nd_1 = Nd * Ep;
-    }
     else {
         const factor = 1.0 - Ep;
         Nd_1 = (1 + factor) * Nd;
     }
     Nd_1 = Math.round(Nd_1);
 
-    console.log(`Current Growth Factor: ${Ep}`);
-    console.log(`Number of cases yesterday: ${Nd}`);
-    console.log(`Expected cases today ${Nd_1}`);
+    // console.log(`Current Growth Factor: ${Ep}`);
+    // console.log(`Number of cases yesterday: ${Nd}`);
+    // console.log(`Expected cases today ${Nd_1}`);
 
     const date = y_axis_labels[y_axis_labels.length-1];
     document.getElementById('cases-text-current').innerHTML = 
         `Total Confirmed Cases Yesderday (${date}): ${Nd}`;
 
     const x = date.split('-');
-    console.log(x);
     document.getElementById('cases-text-predicted').innerHTML = 
         `<u>Expected Total Cases Today</u> (${x[0]}-${x[1]}-${parseInt(x[2],10)+1}): 
             <u><b>${Nd_1}</b></u>`;
@@ -127,13 +164,23 @@ async function get_data() {
 
 }
 //===============================================
-async function use_data() {
+async function setup_charts() {
 
     // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
     // Initialize graph
-    initialize_graph(data__confirmed);
+    const initialize_graph = (data_set, data_labels) => {
+        config.data.datasets[0].data = data_set;
+        config.data.datasets[0].label = data_labels;
+        var ctx = document.getElementById('canvas').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+    };
+    //initialize_graph(data__confirmed);
+    initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);
+    console.log(confirmed.get_x()[0]);
+    console.log(confirmed.get_x()[1]);
+    
 
     // Setup click-callbaks
     chart_callback__linear();
@@ -152,14 +199,15 @@ const chart_callback__linear = () => {
 const chart_callback__change = () => {
 
     // TODO: Get more accurate with the slice indices
-    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length); 
+    const delay = 0;
+    const y_sliced = y_axis_labels.slice(0,y_axis_labels.length-delay);
     const x_change_sliced = data__confirmed__change.slice(0,
                             data__confirmed__change.length);
 
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
 
-        update_graph(x_change_sliced, 'bar');
+        update_graph(x_change_sliced, 'bar', y_sliced);
     });
 };
 //===============================================
