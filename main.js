@@ -35,7 +35,7 @@ const recovered = {
 let config = {
     type: 'line',
     data: {
-        // labels: null,
+        labels: null,
         datasets: [{
             label: 'Total Confirmed Cases',
             backgroundColor: window.chartColors.red,
@@ -172,7 +172,7 @@ async function setup_charts() {
     // Initialize graph
     const initialize_graph = (data_set, data_labels) => {
         config.data.datasets[0].data = data_set;
-        config.data.datasets[0].label = data_labels;
+        config.data.datasets[0].labels = data_labels;
         var ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, config);
     };
@@ -192,7 +192,7 @@ const chart_callback__linear = () => {
     // If clicked on then update window display
     const pill = document.getElementById('pill-linear');
     pill.addEventListener('click', () => {
-        update_graph(data__confirmed, 'line');
+        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
     });
 };
 //===============================================
