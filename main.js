@@ -155,20 +155,31 @@ async function get_data() {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 
         'July', 'August', 'September', 'October', 'November', 'December'];
     const date = y_axis_labels[y_axis_labels.length-1].split('-');
-    const today = parseInt(date[2],10);
-    const tomorrow = today + 1;
+    const yesterday = parseInt(date[2],10);
+    const today = yesterday + 1;
     const month = months[parseInt(date[1],10)-1];
+
+    function numberWithCommas(x) {
+        x = parseInt(x,10);
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    const num_cases_yesterday = numberWithCommas(Nd);
+    const expected_num_cases_today = numberWithCommas(Nd_1);
+
     
     document.getElementById('cases-text-current').innerHTML = 
-        `Total Confirmed Cases Yesderday (${month}-${today}): ${Nd}`;
+        `Total Confirmed Cases Yesderday (${month}-${yesterday}): ${num_cases_yesterday}`;
 
     document.getElementById('cases-text-predicted').innerHTML = 
-        `<u>Expected Total Cases Today</u> (${month}-${tomorrow}): 
-            <u><b>${Nd_1}</b></u>`;
+        `<u>Expected Total Cases Today</u> (${month}-${today}): 
+            <u><b>${expected_num_cases_today}</b></u>`;
     
     document.getElementById('cases-text-growth-factor').innerHTML = 
         `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${Ep.toFixed(3)}`;
 
+    // TODO: Filter on month and only display march
+    // TODO: Add comma to number
 }
 //===============================================
 async function setup_charts() {
