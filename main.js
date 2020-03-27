@@ -1,5 +1,3 @@
-const data_arr = [];
-const y_axis_labels = [];
 const data__confirmed = [];
 const data__confirmed__change = [];
 const data__confirmed__growth_factor = [];
@@ -17,6 +15,12 @@ const confirmed = {
     },
     get_qx: function() {
         return [this.qx.map(v => v.val), this.qx.map(v => v.date)];
+    },
+    get_current_x: function() {
+        return this.x[this.x.length-1].val;
+    },
+    get_current_qx: function() {
+        return this.qx[this.qx.length-1].val;
     }
 };
 //===============================================
@@ -78,7 +82,7 @@ let config = {
     }
 };
 //===============================================
-const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=y_axis_labels) => {
+const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1]) => {
     config.options.scales.yAxes[0].type = y_scale_type;
     config.data.labels = y_labels;
     config.type = graph_type;
@@ -96,8 +100,7 @@ async function get_data() {
 
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
-        data_arr.push(elem);
-        y_axis_labels.push(elem.date);
+
         data__confirmed.push(elem.confirmed);
 
         confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
@@ -106,24 +109,17 @@ async function get_data() {
     });
 
     // [dx] Change
-    for (let i = 1; i < data__confirmed.length; ++i) {
-        //const x0 = data__confirmed[i-1];
+    for (let i = 1; i < confirmed.x.length; ++i) {
         const x0 = confirmed.x[i-1].val;
-
-        //const x1 = data__confirmed[i];
         const x1 = confirmed.x[i].val;
         const date_x1 = confirmed.x[i].date;
         const dx = x1 - x0;
-        data__confirmed__change.push(dx);
         confirmed.dx.push({'date': date_x1, 'val': dx});
     }
 
     // [qx] Growth Factor
-    for (let i = 1; i < data__confirmed__change.length; ++i) {
-        //const dx0 = data__confirmed__change[i-1];
+    for (let i = 1; i < confirmed.dx.length; ++i) {
         const dx0 = confirmed.dx[i-1].val;
-        
-        //const dx1 = data__confirmed__change[i];
         const dx1 = confirmed.dx[i].val;
         const date_dx1 = confirmed.dx[i].date;
         
@@ -131,13 +127,15 @@ async function get_data() {
         if (dx0 < 1e-6)
             growth_factor = null;
         
-        data__confirmed__growth_factor.push(growth_factor);
         confirmed.qx.push({date: date_dx1, val: growth_factor});
     }
 
-    const Ep = data__confirmed__growth_factor[data__confirmed__growth_factor.length - 1];
-    const Nd = data__confirmed[data__confirmed.length - 1];
-    // const Nd_1 = Nd + Ep * Nd;
+    const Ep = confirmed.get_current_qx();
+    console.log(`Ep: ${Ep}`);
+
+    // const Nd = data__confirmed[data__confirmed.length - 1];
+    const Nd = confirmed.get_current_x();
+    console.log(Nd);
 
     let Nd_1 = null;
     if ( Ep > 1.0)
@@ -148,13 +146,9 @@ async function get_data() {
     }
     Nd_1 = Math.round(Nd_1);
 
-    // console.log(`Current Growth Factor: ${Ep}`);
-    // console.log(`Number of cases yesterday: ${Nd}`);
-    // console.log(`Expected cases today ${Nd_1}`);
-
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 
         'July', 'August', 'September', 'October', 'November', 'December'];
-    const date = y_axis_labels[y_axis_labels.length-1].split('-');
+    const date = confirmed.get_x()[1][confirmed.get_x()[1].length-1].split('-');
     const yesterday = parseInt(date[2],10);
     const today = yesterday + 1;
     const month = months[parseInt(date[1],10)-1];
@@ -166,7 +160,6 @@ async function get_data() {
 
     const num_cases_yesterday = numberWithCommas(Nd);
     const expected_num_cases_today = numberWithCommas(Nd_1);
-
     
     document.getElementById('cases-text-current').innerHTML = 
         `Total Confirmed Cases Yesderday (${month}-${yesterday}): ${num_cases_yesterday}`;
@@ -176,10 +169,7 @@ async function get_data() {
             <u><b>${expected_num_cases_today}</b></u>`;
     
     document.getElementById('cases-text-growth-factor').innerHTML = 
-        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${Ep.toFixed(3)}`;
-
-    // TODO: Filter on month and only display march
-    // TODO: Add comma to number
+        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${confirmed.get_current_qx().toFixed(2)}`;
 }
 //===============================================
 async function setup_charts() {
