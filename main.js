@@ -98,9 +98,12 @@ async function get_data() {
 
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
-        confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
-        deaths.x.push({'date': elem.date, 'val': elem.deaths});
-        recovered.x.push({'date': elem.date, 'val': elem.recovered});
+        // Start on March 1st
+        if(idx > 38) {
+            confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
+            deaths.x.push({'date': elem.date, 'val': elem.deaths});
+            recovered.x.push({'date': elem.date, 'val': elem.recovered});
+        }
     });
 
     // [dx] Change
