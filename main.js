@@ -1,6 +1,4 @@
-const data__confirmed = [];
-const data__confirmed__change = [];
-const data__confirmed__growth_factor = [];
+//===============================================
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
 const confirmed = {
@@ -100,9 +98,6 @@ async function get_data() {
 
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
-
-        data__confirmed.push(elem.confirmed);
-
         confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
         deaths.x.push({'date': elem.date, 'val': elem.deaths});
         recovered.x.push({'date': elem.date, 'val': elem.recovered});
@@ -122,21 +117,14 @@ async function get_data() {
         const dx0 = confirmed.dx[i-1].val;
         const dx1 = confirmed.dx[i].val;
         const date_dx1 = confirmed.dx[i].date;
-        
         let growth_factor = dx1 / dx0;
         if (dx0 < 1e-6)
-            growth_factor = null;
-        
+            growth_factor = null;       
         confirmed.qx.push({date: date_dx1, val: growth_factor});
     }
 
     const Ep = confirmed.get_current_qx();
-    console.log(`Ep: ${Ep}`);
-
-    // const Nd = data__confirmed[data__confirmed.length - 1];
     const Nd = confirmed.get_current_x();
-    console.log(Nd);
-
     let Nd_1 = null;
     if ( Ep > 1.0)
         Nd_1 = Nd * Ep;
