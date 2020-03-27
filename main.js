@@ -180,13 +180,22 @@ async function setup_charts() {
     };
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
+    // Click-Event Callback (Linear):
+
+    // Click-Event Callback (Log):
+
+    // Click-Event Callback (Change):
+
+    // Click-Event Callback ():
+
+
     // Setup click-callbaks
     chart_callback__linear();
+    chart_callback__log();
     chart_callback__change();
 }
 //===============================================
 const chart_callback__linear = () => {
-
     // If clicked on then update window display
     const pill = document.getElementById('pill-linear');
     pill.addEventListener('click', () => {
@@ -194,8 +203,14 @@ const chart_callback__linear = () => {
     });
 };
 //===============================================
+const chart_callback__log = () => {
+    const pill = document.getElementById('pill-log');
+    pill.addEventListener('click', () => {
+        update_graph(confirmed.get_x()[0], 'line', 'logarithmic', confirmed.get_x()[1]);
+    });
+};
+//===============================================
 const chart_callback__change = () => {
-
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
         update_graph(confirmed.get_dx()[0], 'bar', 'logarithmic', confirmed.get_dx()[1]);
