@@ -84,13 +84,13 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=y_ax
     config.type = graph_type;
     config.data.datasets[0].data = data_set;
     window.myLine.update();
-
-    console.log(config);
 };
 //===============================================
 setup_charts().catch(err => console.log(err));
 //===============================================
 async function get_data() {
+
+    // Wait on retrieval of data before doing math
     const resp = await fetch(url);
     const data = await resp.json();
 
@@ -128,7 +128,7 @@ async function get_data() {
         const date_dx1 = confirmed.dx[i].date;
         
         let growth_factor = dx1 / dx0;
-        if (growth_factor > 1e3)
+        if (dx0 < 1e-6)
             growth_factor = null;
         
         data__confirmed__growth_factor.push(growth_factor);
@@ -152,13 +152,18 @@ async function get_data() {
     // console.log(`Number of cases yesterday: ${Nd}`);
     // console.log(`Expected cases today ${Nd_1}`);
 
-    const date = y_axis_labels[y_axis_labels.length-1];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const date = y_axis_labels[y_axis_labels.length-1].split('-');
+    const today = parseInt(date[2],10);
+    const tomorrow = today + 1;
+    const month = months[parseInt(date[1],10)-1];
+    
     document.getElementById('cases-text-current').innerHTML = 
-        `Total Confirmed Cases Yesderday (${date}): ${Nd}`;
+        `Total Confirmed Cases Yesderday (${month}-${today}): ${Nd}`;
 
-    const x = date.split('-');
     document.getElementById('cases-text-predicted').innerHTML = 
-        `<u>Expected Total Cases Today</u> (${x[0]}-${x[1]}-${parseInt(x[2],10)+1}): 
+        `<u>Expected Total Cases Today</u> (${month}-${tomorrow}): 
             <u><b>${Nd_1}</b></u>`;
     
     document.getElementById('cases-text-growth-factor').innerHTML = 
