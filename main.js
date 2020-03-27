@@ -64,8 +64,8 @@ let config = {
             xAxes: [{
                 display: true,
                 scaleLabel: {
-                    display: true,
-                    labelString: 'Month'
+                    display: false,
+                    labelString: null
                 }
             }],
             yAxes: [{
@@ -73,7 +73,7 @@ let config = {
                 type: 'linear',
                 scaleLabel: {
                     display: true,
-                    labelString: 'Value',
+                    labelString: null,
                 },
             }]
         }
