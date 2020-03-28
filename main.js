@@ -60,7 +60,27 @@ const recovered = {
     qx: [{ date: '', val: null}]
 };
 //===============================================
+const add_second_dataset_to_graph = (data_set) => {
+    config.data.datasets.push({
+
+        label: null,
+        // backgroundColor: window.chartColors.green,
+        // borderColor: window.chartColors.red,
+        backgroundColor: 'rgb(255, 0, 10)',
+        borderColor: 'rgb(0, 255, 0)',
+        data: data_set,
+        fill: false,
+
+        borderWidth: 8,
+        // pointStyle: 'rectRot',
+        pointRadius: 0,
+        pointBorderColor: 'rgb(0, 55, 0)'
+    });
+    window.myLine.update();
+}
+//===============================================
 const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], annotation=false, title=null, label=null, y_axis_label=null) => {
+
     config.options.title.text = title;
     config.data.datasets[0].label = label;
     config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
@@ -250,13 +270,18 @@ const chart_callback__growth_factor = () => {
 const chart_callback__growth_predict = () => {
     const pill = document.getElementById('pill-predict');
     pill.addEventListener('click', () => {
-        console.log('clicked predict');
+        // Generate input to sigmoidal regression
+        const before_mirroring = confirmed.get_x()[0]; // Deep copy
+        const mirrored = mirror(before_mirroring);
+        // Apply sigmoidal regression
+        // ...
 
-        const mirrored = mirror(confirmed.get_x()[0]);
-        console.log(confirmed.get_x()[0]);
-        console.log(mirrored);
+        console.log(`length of before_mirroring: ${before_mirroring.length}`);
+        console.log(`length of after_mirroring: ${mirrored.length}`);
 
-        update_graph(sigmoidal_regression, 'line', 'linear', confirmed.get_x_axis_for_sigmoidal_regression());
+        // Plot sigmoidal regression
+        update_graph(before_mirroring, 'line', 'linear', confirmed.get_x_axis_for_sigmoidal_regression());
+        add_second_dataset_to_graph(sigmoidal_regression);
     });
 };
 //===============================================

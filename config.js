@@ -9,6 +9,11 @@ let config = {
             borderColor: window.chartColors.red,
             data: null,
             fill: false,
+
+            borderWidth: 5,
+            // pointStyle: 'rectRot',
+            // pointRadius: 3,
+            pointBorderColor: 'rgb(0, 55, 0)'
         }]
     },
     options: {
@@ -50,6 +55,18 @@ let config = {
                     labelString: null,
                 },
             }]
-        }
+        },
+        elements: {
+            point: {
+                // radius: 100,
+                // pointStyle: "circle",
+                // backgroundColor: "rgba(0,0,0,0.1)",
+                // borderColor: "rgba(0,0,0,0.1)",
+                // borderWidth: 1,
+                // hitRadius: 1,
+                // hoverRadius: 4,
+                // hoverBorderWidth: 1
+            },
+        },
     }
 };
