@@ -4,5 +4,5 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 //===============================================
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-        'July', 'August', 'September', 'October', 'November', 'December'];
+const months = ['Jan', 'Feb', 'March', 'Apr', 'May', 'June', 
+        'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
