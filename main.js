@@ -11,13 +11,19 @@ const confirmed = {
             this.x.map(v => v.date).slice(0)
         ];
     },
-    get_dx: function() {
+    get_x_march: function() {
+        return [
+            this.x.map(v => v.val).slice(39),
+            this.x.map(v => v.date).slice(39)
+        ];
+    },
+    get_dx_march: function() {
         return [
             this.dx.map(v => v.val).slice(38),
             this.dx.map(v => v.date).slice(38)
         ];
     },
-    get_qx: function() {
+    get_qx_march: function() {
         return [
             this.qx.map(v => v.val).slice(37),
             this.qx.map(v => v.date).slice(37)
@@ -78,9 +84,7 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
         }
     }
 
-    if(annotation === false) {
-        config.options.annotation = {};
-    } else {
+    if(annotation === true) {
         config.options.annotation = {
             annotations: [{
                 type: 'line',
@@ -94,8 +98,8 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
                 content: 'Test label'
                 }
             }]
-        };
-    }
+        };        
+    } else config.options.annotation = {};
 
     window.myLine.update();
 };
@@ -223,14 +227,14 @@ const chart_callback__log = () => {
 const chart_callback__change = () => {
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_dx()[0], 'bar', 'linear', confirmed.get_dx()[1]);
+        update_graph(confirmed.get_dx_march()[0], 'bar', 'linear', confirmed.get_dx_march()[1]);
     });
 };
 //===============================================
 const chart_callback__growth_factor = () => {
     const pill = document.getElementById('pill-factor');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_qx()[0], 'bar', 'linear', confirmed.get_qx()[1], true);
+        update_graph(confirmed.get_qx_march()[0], 'bar', 'linear', confirmed.get_qx_march()[1], true);
     });
 };
 //===============================================

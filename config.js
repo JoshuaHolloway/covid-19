@@ -12,6 +12,7 @@ let config = {
         }]
     },
     options: {
+        annotation: {},
         responsive: true,
         title: {
             display: false,
