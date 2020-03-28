@@ -81,8 +81,6 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
                     || val === 1e3 
                     || val === 1e2 
                     || val === 1e1) {
-                        console.log('val == ' + val);
-                        console.log('numberWithCommas(val) == ' + numberWithCommas(val));
                         return numberWithCommas(val);
                     }
             }
@@ -169,8 +167,6 @@ async function get_data() {
     // console.log(`Expected total cases today: ${today_expected_x}`);
 
     // Display results
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-         'July', 'August', 'September', 'October', 'November', 'December'];
     const date = confirmed.get_x()[1][confirmed.get_x()[1].length-1].split('-');
     const yesterday = parseInt(date[2],10);
     const today = yesterday + 1;
