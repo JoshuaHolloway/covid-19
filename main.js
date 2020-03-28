@@ -17,6 +17,9 @@ const confirmed = {
     get_current_x: function() {
         return this.x[this.x.length-1].val;
     },
+    get_current_dx: function() {
+        return this.dx[this.dx.length-1].val;
+    },
     get_current_qx: function() {
         return this.qx[this.qx.length-1].val;
     }
@@ -34,52 +37,6 @@ const recovered = {
     qx: [{ date: '', val: null}]
 };
 //===============================================
-let config = {
-    type: 'line',
-    data: {
-        labels: null,
-        datasets: [{
-            label: null,
-            backgroundColor: window.chartColors.red,
-            borderColor: window.chartColors.red,
-            data: null,
-            fill: false,
-        }]
-    },
-    options: {
-        responsive: true,
-        title: {
-            display: false,
-            text: null
-        },
-        tooltips: {
-            mode: 'index',
-            intersect: false,
-        },
-        hover: {
-            mode: 'nearest',
-            intersect: true
-        },
-        scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: false,
-                    labelString: null
-                }
-            }],
-            yAxes: [{
-                display: true,
-                type: 'linear',
-                scaleLabel: {
-                    display: true,
-                    labelString: null,
-                },
-            }]
-        }
-    }
-};
-//===============================================
 const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
     config.options.title.text = title;
     config.data.datasets[0].label = label;
@@ -89,6 +46,21 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
     config.data.labels = y_labels;
     config.type = graph_type;
     config.data.datasets[0].data = data_set;
+
+    if(y_scale_type == 'linear') {
+        config.options.scales.yAxes[0].ticks = {
+            beginAtZero: false,
+            callback: function(val, idx, vals) {
+                return numberWithCommas(val);
+            }
+        }
+    }
+    else {
+        config.options.scales.yAxes[0].ticks = {
+            beginAtZero: false,
+        }
+    }
+
     window.myLine.update();
 };
 //===============================================
@@ -136,8 +108,8 @@ async function get_data() {
     if ( Ep > 1.0)
         Nd_1 = Nd * Ep;
     else {
-        const factor = 1.0 - Ep;
-        Nd_1 = (1 + factor) * Nd;
+        console.log(`Number of new cases yesterday: ${confirmed.get_current_dx()}`);
+        console.log(`Expected number of cases today: ${confirmed.get_current_dx() * confirmed.get_current_qx()}`);
     }
     Nd_1 = Math.round(Nd_1);
 
@@ -147,11 +119,6 @@ async function get_data() {
     const yesterday = parseInt(date[2],10);
     const today = yesterday + 1;
     const month = months[parseInt(date[1],10)-1];
-
-    function numberWithCommas(x) {
-        x = parseInt(x,10);
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
 
     const num_cases_yesterday = numberWithCommas(Nd);
     const expected_num_cases_today = numberWithCommas(Nd_1);
@@ -181,18 +148,16 @@ async function setup_charts() {
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
     // Click-Event Callback (Linear):
+    chart_callback__linear();
 
     // Click-Event Callback (Log):
+    chart_callback__log();
 
     // Click-Event Callback (Change):
+    chart_callback__change();
 
     // Click-Event Callback ():
-
-
-    // Setup click-callbaks
-    chart_callback__linear();
-    chart_callback__log();
-    chart_callback__change();
+    
 }
 //===============================================
 const chart_callback__linear = () => {
@@ -213,7 +178,7 @@ const chart_callback__log = () => {
 const chart_callback__change = () => {
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_dx()[0], 'bar', 'logarithmic', confirmed.get_dx()[1]);
+        update_graph(confirmed.get_dx()[0], 'bar', 'linear', confirmed.get_dx()[1]);
     });
 };
 //===============================================
