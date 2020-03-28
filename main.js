@@ -37,7 +37,7 @@ const recovered = {
     qx: [{ date: '', val: null}]
 };
 //===============================================
-const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
+const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null, annotation=false) => {
     config.options.title.text = title;
     config.data.datasets[0].label = label;
     config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
@@ -50,7 +50,7 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
     if(y_scale_type == 'linear') {
         config.options.scales.yAxes[0].ticks = {
             beginAtZero: false,
-            callback: function(val, idx, vals) {
+            callback: (val, idx, vals) => {
                 return numberWithCommas(val);
             }
         }
@@ -58,7 +58,7 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
     else {
         config.options.scales.yAxes[0].ticks = {
             beginAtZero: false,
-            callback: function(val, idx, vals) {
+            callback: (val, idx, vals) => {
                 if(    val === 1e5 
                     || val === 1e4 
                     || val === 1e3 
@@ -66,6 +66,25 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
                     || val === 1e1)
                     return numberWithCommas(val);
             }
+        }
+    }
+
+    if(annotation === true) {
+        config.options.annotations = {};
+    } else {
+        config.options.annotations = {
+            annotations: [{
+                type: 'line',
+                mode: 'horizontal',
+                scaleID: 'y-axis-0',
+                value: 1,
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 4,
+                label: {
+                enabled: false,
+                content: 'Test label'
+                }
+            }]
         }
     }
 
@@ -172,7 +191,10 @@ async function setup_charts() {
     // Click-Event Callback (Change):
     chart_callback__change();
 
-    // Click-Event Callback ():
+    // Click-Event Callback (Growth-Factor):
+    chart_callback__growth_factor();
+
+    // Click-Event Callback (Prediction):
     
 }
 //===============================================
@@ -195,6 +217,13 @@ const chart_callback__change = () => {
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
         update_graph(confirmed.get_dx()[0], 'bar', 'linear', confirmed.get_dx()[1]);
+    });
+};
+//===============================================
+const chart_callback__growth_factor = () => {
+    const pill = document.getElementById('pill-factor');
+    pill.addEventListener('click', () => {
+        update_graph(confirmed.get_qx()[0], 'bar', 'linear', confirmed.get_qx()[1], true);
     });
 };
 //===============================================
