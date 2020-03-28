@@ -37,6 +37,14 @@ const confirmed = {
     },
     get_current_qx: function() {
         return this.qx[this.qx.length-1].val;
+    },
+    get_x_axis_for_sigmoidal_regression: function () {
+        const new_length = 2*this.x.length-1;
+        const new_x_axis = [];
+        for (let i = 0; i < new_length; i++) {
+            new_x_axis.push(i);
+        }
+        return new_x_axis;
     }
 };
 //===============================================
@@ -244,12 +252,11 @@ const chart_callback__growth_predict = () => {
     pill.addEventListener('click', () => {
         console.log('clicked predict');
 
-
-        // From linear:
-        // update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
         const mirrored = mirror(confirmed.get_x()[0]);
         console.log(confirmed.get_x()[0]);
         console.log(mirrored);
+
+        update_graph(sigmoidal_regression, 'line', 'linear', confirmed.get_x_axis_for_sigmoidal_regression());
     });
 };
 //===============================================
