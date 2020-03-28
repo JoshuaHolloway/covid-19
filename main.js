@@ -102,36 +102,45 @@ async function get_data() {
         confirmed.qx.push({date: date_dx1, val: growth_factor});
     }
 
-    const Ep = confirmed.get_current_qx();
-    const Nd = confirmed.get_current_x();
-    let Nd_1 = null;
-    if ( Ep > 1.0)
-        Nd_1 = Nd * Ep;
-    else {
-        console.log(`Number of new cases yesterday: ${confirmed.get_current_dx()}`);
-        console.log(`Expected number of cases today: ${confirmed.get_current_dx() * confirmed.get_current_qx()}`);
-    }
-    Nd_1 = Math.round(Nd_1);
+    // Total number of cases today:
+    const yesterday_x = confirmed.get_current_x();
+
+    // Number of new cases yesterday:
+    const yesterday_dx = confirmed.get_current_dx();
+
+    // Yesterdays growth rate:
+    const yesterday_qx = confirmed.get_current_qx();
+
+    // Expected new cases today (based on yesterdays growth-rate):
+    const today_expected_dx = Math.round(yesterday_dx * yesterday_qx);
+
+    // Expected total number of cases today:
+    const today_expected_x = yesterday_x + today_expected_dx;
+
+    // Number of 
+    console.log(`Number of total cases yesterday: ${yesterday_x}`);
+    console.log(`Number of new cases yesterday: ${yesterday_dx}`);
+    console.log(`Growth rate yesterday: ${yesterday_qx}`);
+    console.log(`Expected new cases today: ${today_expected_dx}`);
+    console.log(`Expected total cases today: ${today_expected_x}`);
+
 
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-        'July', 'August', 'September', 'October', 'November', 'December'];
+         'July', 'August', 'September', 'October', 'November', 'December'];
     const date = confirmed.get_x()[1][confirmed.get_x()[1].length-1].split('-');
     const yesterday = parseInt(date[2],10);
     const today = yesterday + 1;
     const month = months[parseInt(date[1],10)-1];
 
-    const num_cases_yesterday = numberWithCommas(Nd);
-    const expected_num_cases_today = numberWithCommas(Nd_1);
-    
     document.getElementById('cases-text-current').innerHTML = 
-        `Total Confirmed Cases Yesderday (${month}-${yesterday}): ${num_cases_yesterday}`;
+        `Total Confirmed Cases Yesderday (${month}-${yesterday}): ${yesterday_x}`;
 
     document.getElementById('cases-text-predicted').innerHTML = 
         `<u>Expected Total Cases Today</u> (${month}-${today}): 
-            <u><b>${expected_num_cases_today}</b></u>`;
+            <u><b>${today_expected_x}</b></u>`;
     
     document.getElementById('cases-text-growth-factor').innerHTML = 
-        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${confirmed.get_current_qx().toFixed(2)}`;
+        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${yesterday_qx.toFixed(2)}`;
 }
 //===============================================
 async function setup_charts() {
