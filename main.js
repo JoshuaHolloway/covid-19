@@ -6,13 +6,22 @@ const confirmed = {
     dx: [],
     qx: [],
     get_x: function() {
-        return[this.x.map(v => v.val),  this.x.map(v => v.date)];
+        return [
+            this.x.map(v => v.val).slice(0),
+            this.x.map(v => v.date).slice(0)
+        ];
     },
     get_dx: function() {
-        return [this.dx.map(v => v.val), this.dx.map(v => v.date)];
+        return [
+            this.dx.map(v => v.val).slice(38),
+            this.dx.map(v => v.date).slice(38)
+        ];
     },
     get_qx: function() {
-        return [this.qx.map(v => v.val), this.qx.map(v => v.date)];
+        return [
+            this.qx.map(v => v.val).slice(37),
+            this.qx.map(v => v.date).slice(37)
+        ];
     },
     get_current_x: function() {
         return this.x[this.x.length-1].val;
@@ -102,11 +111,9 @@ async function get_data() {
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
         // Start on March 1st
-        if(idx > 38) {
-            confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
-            deaths.x.push({'date': elem.date, 'val': elem.deaths});
-            recovered.x.push({'date': elem.date, 'val': elem.recovered});
-        }
+        confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
+        deaths.x.push({'date': elem.date, 'val': elem.deaths});
+        recovered.x.push({'date': elem.date, 'val': elem.recovered});
     });
 
     // [dx] Change
