@@ -38,7 +38,6 @@ let config = {
                         const date = val.split('-');
                         const month = months[parseInt(date[1],10)-1];
                         const date_formatted = `${month}-${date[2]}`
-                        console.log(date_formatted);
                         return date_formatted;
                     },
                 }
@@ -50,7 +49,6 @@ let config = {
                     display: true,
                     labelString: null,
                 },
-
             }]
         }
     }

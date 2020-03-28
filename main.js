@@ -104,8 +104,6 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
         };        
     } else config.options.annotation = {};
 
-    console.dir(config);
-
     window.myLine.update();
 };
 //===============================================
@@ -209,7 +207,7 @@ async function setup_charts() {
     chart_callback__growth_factor();
 
     // Click-Event Callback (Prediction):
-    
+    chart_callback__growth_predict();
 }
 //===============================================
 const chart_callback__linear = () => {
@@ -238,6 +236,20 @@ const chart_callback__growth_factor = () => {
     const pill = document.getElementById('pill-factor');
     pill.addEventListener('click', () => {
         update_graph(confirmed.get_qx_march()[0], 'bar', 'linear', confirmed.get_qx_march()[1], true);
+    });
+};
+//===============================================
+const chart_callback__growth_predict = () => {
+    const pill = document.getElementById('pill-predict');
+    pill.addEventListener('click', () => {
+        console.log('clicked predict');
+
+
+        // From linear:
+        // update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
+        const mirrored = mirror(confirmed.get_x()[0]);
+        console.log(confirmed.get_x()[0]);
+        console.log(mirrored);
     });
 };
 //===============================================
