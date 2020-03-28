@@ -60,77 +60,95 @@ const recovered = {
     qx: [{ date: '', val: null}]
 };
 //===============================================
-const add_second_dataset_to_graph = (data_set) => {
-    config.data.datasets.push({
+const update_graph = (data_sets, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], annotation=false, title=null, label=null, y_axis_label=null) => {
 
-        label: null,
-        // backgroundColor: window.chartColors.green,
-        // borderColor: window.chartColors.red,
-        backgroundColor: 'rgb(255, 0, 10)',
-        borderColor: 'rgb(0, 255, 0)',
-        data: data_set,
-        fill: false,
+    const do_graph = () => {
 
-        borderWidth: 8,
-        // pointStyle: 'rectRot',
-        pointRadius: 0,
-        pointBorderColor: 'rgb(0, 55, 0)'
-    });
-    window.myLine.update();
-}
-//===============================================
-const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], annotation=false, title=null, label=null, y_axis_label=null) => {
+        // -Remove the second graph stored in config object 
+        //  (if pressing any single dataset pill after a double dataset pill)
+        if (config.data.datasets.length > 1)
+            config.data.datasets.pop();
 
-    config.options.title.text = title;
-    config.data.datasets[0].label = label;
-    config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+        const data_set = data_sets[0].slice();
+        //const data_set = data_sets.pop();
 
-    config.options.scales.yAxes[0].type = y_scale_type;
-    config.data.labels = y_labels;
-    config.type = graph_type;
-    config.data.datasets[0].data = data_set;
+        config.options.title.text = title;
+        config.data.datasets[0].label = label;
+        config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
 
-    if(y_scale_type == 'linear') {
-        config.options.scales.yAxes[0].ticks = {
-            beginAtZero: false,
-            callback: (val, idx, vals) => {
-                return numberWithCommas(val);
+        config.options.scales.yAxes[0].type = y_scale_type;
+        config.data.labels = y_labels;
+        config.type = graph_type;
+        config.data.datasets[0].data = data_set;
+
+        if(y_scale_type == 'linear') {
+            config.options.scales.yAxes[0].ticks = {
+                beginAtZero: false,
+                callback: (val, idx, vals) => {
+                    return numberWithCommas(val);
+                }
             }
         }
-    }
-    else {
-        config.options.scales.yAxes[0].ticks = {
-            beginAtZero: true,
-            min: 0,
-            max: 3e5,
-            callback: (val, idx, vals) => {
-                if(    val === 1e5 
-                    || val === 1e4 
-                    || val === 1e3 
-                    || val === 1e2 
-                    || val === 1e1) {
+        else {
+            config.options.scales.yAxes[0].ticks = {
+                beginAtZero: true,
+                min: 0,
+                max: 3e5,
+                callback: (val, idx, vals) => {
+                    if(    val === 1e5 
+                        || val === 1e4 
+                        || val === 1e3 
+                        || val === 1e2 
+                        || val === 1e1) {
                         return numberWithCommas(val);
                     }
+                }
             }
         }
-    }
 
-    if(annotation === true) {
-        config.options.annotation = {
-            annotations: [{
-                type: 'line',
-                mode: 'horizontal',
-                scaleID: 'y-axis-0',
-                value: 1,
-                borderColor: 'rgb(75, 192, 192)',
-                borderWidth: 4,
-                label: {
-                enabled: false,
-                content: 'Test label'
-                }
-            }]
-        };        
-    } else config.options.annotation = {};
+        if(annotation === true) {
+            config.options.annotation = {
+                annotations: [{
+                    type: 'line',
+                    mode: 'horizontal',
+                    scaleID: 'y-axis-0',
+                    value: 1,
+                    borderColor: 'rgb(75, 192, 192)',
+                    borderWidth: 4,
+                    label: {
+                    enabled: false,
+                    content: 'Test label'
+                    }
+                }]
+            };        
+        } else config.options.annotation = {};
+    };
+
+    if (data_sets.length > 1) {
+
+        do_graph();
+
+        config.data.datasets.push({
+
+            label: null,
+            // backgroundColor: window.chartColors.green,
+            // borderColor: window.chartColors.red,
+            backgroundColor: 'rgb(255, 0, 10)',
+            borderColor: 'rgb(0, 255, 0)',
+            data: data_sets[1].slice(),
+            fill: false,
+
+            borderWidth: 8,
+            // pointStyle: 'rectRot',
+            pointRadius: 0,
+            pointBorderColor: 'rgb(0, 55, 0)'
+        });
+
+    } else {
+
+        do_graph();
+
+    } // more than one graph
 
     window.myLine.update();
 };
@@ -218,7 +236,7 @@ async function setup_charts() {
     const initialize_graph = _ => {
         var ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, config);
-        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
+        update_graph([confirmed.get_x()[0]], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
     };
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
@@ -242,28 +260,28 @@ const chart_callback__linear = () => {
     // If clicked on then update window display
     const pill = document.getElementById('pill-linear');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
+        update_graph([confirmed.get_x()[0]], 'line', 'linear', confirmed.get_x()[1]);
     });
 };
 //===============================================
 const chart_callback__log = () => {
     const pill = document.getElementById('pill-log');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_x()[0], 'line', 'logarithmic', confirmed.get_x()[1]);
+        update_graph([confirmed.get_x()[0]], 'line', 'logarithmic', confirmed.get_x()[1]);
     });
 };
 //===============================================
 const chart_callback__change = () => {
     const pill = document.getElementById('pill-change');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_dx_march()[0], 'bar', 'linear', confirmed.get_dx_march()[1]);
+        update_graph([confirmed.get_dx_march()[0]], 'bar', 'linear', confirmed.get_dx_march()[1]);
     });
 };
 //===============================================
 const chart_callback__growth_factor = () => {
     const pill = document.getElementById('pill-factor');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_qx_march()[0], 'bar', 'linear', confirmed.get_qx_march()[1], true);
+        update_graph([confirmed.get_qx_march()[0]], 'bar', 'linear', confirmed.get_qx_march()[1], true);
     });
 };
 //===============================================
@@ -280,8 +298,8 @@ const chart_callback__growth_predict = () => {
         console.log(`length of after_mirroring: ${mirrored.length}`);
 
         // Plot sigmoidal regression
-        update_graph(before_mirroring, 'line', 'linear', confirmed.get_x_axis_for_sigmoidal_regression());
-        add_second_dataset_to_graph(sigmoidal_regression);
+        update_graph([before_mirroring, sigmoidal_regression], 'line', 'linear', confirmed.get_x_axis_for_sigmoidal_regression());
+        // add_second_dataset_to_graph(sigmoidal_regression);
     });
 };
 //===============================================
