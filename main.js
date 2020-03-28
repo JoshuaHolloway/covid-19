@@ -58,6 +58,14 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
     else {
         config.options.scales.yAxes[0].ticks = {
             beginAtZero: false,
+            callback: function(val, idx, vals) {
+                if(    val === 1e5 
+                    || val === 1e4 
+                    || val === 1e3 
+                    || val === 1e2 
+                    || val === 1e1)
+                    return numberWithCommas(val);
+            }
         }
     }
 
