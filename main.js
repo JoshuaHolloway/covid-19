@@ -46,7 +46,7 @@ const recovered = {
     qx: [{ date: '', val: null}]
 };
 //===============================================
-const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null, annotation=false) => {
+const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], annotation=false, title=null, label=null, y_axis_label=null) => {
     config.options.title.text = title;
     config.data.datasets[0].label = label;
     config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
@@ -78,10 +78,10 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
         }
     }
 
-    if(annotation === true) {
-        config.options.annotations = {};
+    if(annotation === false) {
+        config.options.annotation = {};
     } else {
-        config.options.annotations = {
+        config.options.annotation = {
             annotations: [{
                 type: 'line',
                 mode: 'horizontal',
@@ -94,7 +94,7 @@ const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=conf
                 content: 'Test label'
                 }
             }]
-        }
+        };
     }
 
     window.myLine.update();
