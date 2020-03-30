@@ -5,7 +5,7 @@ class Config {
 
     // Properties
     num_datasets = 0;
-    config = {
+    _ = {
         type: 'line',
         data: {
             labels: null,
@@ -53,20 +53,20 @@ class Config {
 
     // Constructor (initialize graph)
     constructor(data_set, graph_type, y_scale_type='linear', y_labels=null, title=null, label=null, y_axis_label=null) {
-        this.config.options.title.text = title;
-        this.config.data.datasets[0].label = label;
-        this.config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
-        this.config.options.scales.yAxes[0].type = y_scale_type;
-        this.config.data.labels = y_labels;
-        this.config.type = graph_type;
-        this.config.data.datasets[0].data = data_set;
+        this._.options.title.text = title;
+        this._.data.datasets[0].label = label;
+        this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+        this._.options.scales.yAxes[0].type = y_scale_type;
+        this._.data.labels = y_labels;
+        this._.type = graph_type;
+        this._.data.datasets[0].data = data_set;
     };
 
     // Change dataset
     modify_dataset = ([datasets]) => {
 
         // reset config.data.datasets field
-        this.config.data.datasets = null;
+        this._.data.datasets = null;
 
         // push datasets onto config.data.datasets field
     };
@@ -107,7 +107,7 @@ class Confirmed {
 
         // bind to canvas context
         const ctx = document.getElementById('canvas').getContext('2d');
-        window.myLine = new Chart(ctx, this.config.config);
+        window.myLine = new Chart(ctx, this.config._);
         confirmed.config.update_graph();
     };
 };
