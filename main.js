@@ -72,17 +72,28 @@ class Config {
 
         // push datasets onto config.data.datasets field
         datasets.forEach((dataset, idx, datasets) => {
+
+            // const color = (idx===0) ? window.chartColors.red : window.chartColors.green;
+            let color;
+            if (idx === 0)
+                color = window.chartColors.red;
+            else if (idx === 1)
+                color = window.chartColors.green;
+            else if (idx === 2)
+                color = window.chartColors.blue;
+
             this._.data.datasets.push(
                 {
                     label: null,
-                    backgroundColor: window.chartColors.red,
-                    borderColor: window.chartColors.red,
+                    backgroundColor: color,
+                    borderColor: color,
                     data: dataset,
                     fill: false,
                 }
             );
         });
     };
+
     set_chart_type = (chart_type) => this._.type = graph_type;
     set_chart_title = (chart_title) => this._.options.title.text = chart_title;
     set_dataset_label = (dataset_label) => this._.data.datasets[0].label = dataset_label;
@@ -235,11 +246,11 @@ class Confirmed {
                 const mirrored = mirror(x);
                 console.log(mirrored);
 
-                this.config.set_dataset([[], sigmoidal_regression]);
+                this.config.set_dataset([x, sigmoidal_regression_03_30]);
                 this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(200e3);
+                this.config.set_constant_line(300e3);
                 this.config.update_graph();
         });
 
