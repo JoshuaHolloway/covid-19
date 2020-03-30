@@ -83,21 +83,29 @@ class Config {
         });
     };
 
-    set_x_labels = (x_labels) => {
-        this._.data.labels = x_labels;
-    };
-
+    set_x_labels = (x_labels) => this._.data.labels = x_labels;
     set_chart_type = (graph_type) => this._.type = graph_type;
-
-    set_y_scale_type = (y_scale_type) => {
-        console.log('set_y_scale_type:');
-        this._.options.scales.yAxes[0].type = y_scale_type;
-        console.log(this._);
+    set_y_scale_type = (y_scale_type) => this._.options.scales.yAxes[0].type = y_scale_type;
+    clear_constant_line = () => this._.options.annotation = {};
+    set_constant_line = (val) => {
+        // https://github.com/chartjs/chartjs-plugin-annotation
+        this._.options.annotation = {
+            annotations: [{
+                type: 'line',
+                mode: 'horizontal',
+                scaleID: 'y-axis-0',
+                value: val,
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 4,
+                label: {
+                enabled: false,
+                content: 'Test label'
+                }
+            }]
+        }
     };
 
-    update_graph = () => {
-        window.myLine.update();
-    };
+    update_graph = () => window.myLine.update();
 };
 //===============================================
 class Confirmed {
@@ -144,6 +152,7 @@ class Confirmed {
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
+                this.config.clear_constant_line();
                 this.config.update_graph();
         });
 
@@ -154,6 +163,7 @@ class Confirmed {
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('logarithmic');
+                this.config.clear_constant_line();
                 this.config.update_graph();
         });
 
@@ -164,6 +174,7 @@ class Confirmed {
                 this.config.set_x_labels(this.get_dx()[1]);
                 this.config.set_chart_type('bar');
                 this.config.set_y_scale_type('linear');
+                this.config.clear_constant_line();
                 this.config.update_graph();
         });
 
@@ -174,6 +185,7 @@ class Confirmed {
                 this.config.set_x_labels(this.get_qx()[1]);
                 this.config.set_chart_type('bar');
                 this.config.set_y_scale_type('linear');
+                this.config.set_constant_line(1);
                 this.config.update_graph();
         });
 
