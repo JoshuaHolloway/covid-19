@@ -66,12 +66,20 @@ class Config {
     set_dataset = (datasets) => {
 
         // reset config.data.datasets field
-        //this._.data.datasets = [];
+        this._.data.datasets = [];
         //this._.data.datasets[0].data = datasets.pop();
 
         // push datasets onto config.data.datasets field
         datasets.forEach((dataset, idx, datasets) => {
-            this._.data.datasets.push(dataset);
+            this._.data.datasets.push(
+                {
+                    label: null,
+                    backgroundColor: window.chartColors.red,
+                    borderColor: window.chartColors.red,
+                    data: dataset,
+                    fill: false,
+                }
+            );
         });
     };
 
