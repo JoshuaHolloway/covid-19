@@ -241,12 +241,9 @@ class Confirmed {
         // Click-Event callback [growth-factor]
         document.getElementById('pill-predict')
             .addEventListener('click', () => {
-                const x = this.get_x()[0];
-                console.log(x);
-                const mirrored = mirror(x);
-                console.log(mirrored);
-
-                this.config.set_dataset([x, sigmoidal_regression_03_30]);
+                // const x = this.get_x()[0];
+                // const mirrored = mirror(x);
+                this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30]);
                 this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
