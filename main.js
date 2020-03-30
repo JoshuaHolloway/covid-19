@@ -1,39 +1,6 @@
 //===============================================
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
-const confirmed = {
-    x: [],
-    dx: [],
-    qx: [],
-    get_x: function() {
-        return[this.x.map(v => v.val),  this.x.map(v => v.date)];
-    },
-    get_dx: function() {
-        return [this.dx.map(v => v.val), this.dx.map(v => v.date)];
-    },
-    get_qx: function() {
-        return [this.qx.map(v => v.val), this.qx.map(v => v.date)];
-    },
-    get_current_x: function() {
-        return this.x[this.x.length-1].val;
-    },
-    get_current_qx: function() {
-        return this.qx[this.qx.length-1].val;
-    }
-};
-//===============================================
-const deaths = {
-    x: [{ date: '', val: null}],
-    dx: [{ date: '', val: null}],
-    qx: [{ date: '', val: null}]
-};
-//===============================================
-const recovered = {
-    x: [{ date: '', val: null}],
-    dx: [{ date: '', val: null}],
-    qx: [{ date: '', val: null}]
-};
-//===============================================
 class Config {
     config = {
         type: 'line',
@@ -79,25 +46,56 @@ class Config {
                 }]
             }
         }
-    }
-};
-//===============================================
-const config_confirmed = new Config();
-//===============================================
-const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
-    config_confirmed.config.options.title.text = title;
-    config_confirmed.config.data.datasets[0].label = label;
-    config_confirmed.config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+    };
 
-    config_confirmed.config.options.scales.yAxes[0].type = y_scale_type;
-    config_confirmed.config.data.labels = y_labels;
-    config_confirmed.config.type = graph_type;
-    config_confirmed.config.data.datasets[0].data = data_set;
-    window.myLine.update();
+    update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
+        this.config.options.title.text = title;
+        this.config.data.datasets[0].label = label;
+        this.config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+        this.config.options.scales.yAxes[0].type = y_scale_type;
+        this.config.data.labels = y_labels;
+        this.config.type = graph_type;
+        this.config.data.datasets[0].data = data_set;
+        window.myLine.update();
+    };
 };
+//===============================================
+const confirmed = {
+    x: [],
+    dx: [],
+    qx: [],
+    get_x: function() {
+        return[this.x.map(v => v.val),  this.x.map(v => v.date)];
+    },
+    get_dx: function() {
+        return [this.dx.map(v => v.val), this.dx.map(v => v.date)];
+    },
+    get_qx: function() {
+        return [this.qx.map(v => v.val), this.qx.map(v => v.date)];
+    },
+    get_current_x: function() {
+        return this.x[this.x.length-1].val;
+    },
+    get_current_qx: function() {
+        return this.qx[this.qx.length-1].val;
+    },
+    config: new Config()
+};
+//===============================================
+const deaths = {
+    x: [{ date: '', val: null}],
+    dx: [{ date: '', val: null}],
+    qx: [{ date: '', val: null}]
+};
+//===============================================
+const recovered = {
+    x: [{ date: '', val: null}],
+    dx: [{ date: '', val: null}],
+    qx: [{ date: '', val: null}]
+};
+//===============================================
 //===============================================
 setup_charts().catch(err => console.log(err));
-// const config_confirmed = new Config();
 //===============================================
 async function get_data() {
 
@@ -144,15 +142,14 @@ async function setup_charts() {
     // Initialize confirmed graph (with linear data)
     const initialize_graph = _ => {
         var ctx = document.getElementById('canvas').getContext('2d');
-        window.myLine = new Chart(ctx, config_confirmed.config);
-        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
+        window.myLine = new Chart(ctx, confirmed.config.config);
+        confirmed.config.update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
     };
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
     // Initialize deaths graph (with linear data)
 
     // Initialize (3rd) graph 
-
 
     // Setup click-event callbacks (confirmed)
     chart_callback__linear();
@@ -164,7 +161,7 @@ const chart_callback__linear = () => {
     // If clicked on then update window display
     const pill = document.getElementById('pill-linear');
     pill.addEventListener('click', () => {
-        update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
+        confirmed.config.update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
     });
 };
 //===============================================
@@ -172,7 +169,7 @@ const chart_callback__log = () => {
     const pill = document.getElementById('pill-log');
     pill.addEventListener('click', () => {
         console.log('CLICKED log');
-        update_graph(confirmed.get_x()[0], 'line', 'logarithmic', confirmed.get_x()[1]);
+        confirmed.config.update_graph(confirmed.get_x()[0], 'line', 'logarithmic', confirmed.get_x()[1]);
     });
 };
 //===============================================
