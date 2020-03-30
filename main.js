@@ -54,16 +54,16 @@ class Config {
     };
 
     // Constructor (initialize graph)
-    constructor(data_set, graph_type, y_scale_type='linear', x_labels=null, title=null, dataset_label=null, y_axis_label=null) {
-        this._.options.title.text = title;
-
-
+    constructor(data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
+        
+        this.set_chart_type(chart_type);
+        this.set_chart_title(chart_title);
         this.set_dataset_label(dataset_label);
         this.set_y_label(y_axis_label);
         this.set_y_scale_type(y_scale_type);
         this.set_x_labels(x_labels)
         
-        this._.type = graph_type;
+        
         this._.data.datasets[0].data = data_set;
         this._.options.annotation = {
             annotations: [{
@@ -101,6 +101,8 @@ class Config {
             );
         });
     };
+    set_chart_type = (chart_type) => this._.type = graph_type;
+    set_chart_title = (chart_title) => this._.options.title.text = chart_title;
     set_dataset_label = (dataset_label) => this._.data.datasets[0].label = dataset_label;
     set_y_label = (y_axis_label) => this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
     set_x_labels = (x_labels) => this._.data.labels = x_labels;
