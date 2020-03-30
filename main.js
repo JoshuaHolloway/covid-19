@@ -47,8 +47,10 @@ class Config {
                         labelString: null,
                     },
                 }]
-            }
-        }
+            },
+            
+        },
+        
     };
 
     // Constructor (initialize graph)
@@ -60,6 +62,20 @@ class Config {
         this._.data.labels = y_labels;
         this._.type = graph_type;
         this._.data.datasets[0].data = data_set;
+        this._.options.annotation = {
+            annotations: [{
+                type: 'line',
+                mode: 'horizontal',
+                scaleID: 'y-axis-0',
+                value: 150e3,
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 4,
+                label: {
+                enabled: false,
+                content: 'Test label'
+                }
+            }]
+        };
     };
 
     // Change dataset
@@ -152,7 +168,7 @@ class Confirmed {
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
-                this.config.clear_constant_line();
+                this.config.set_constant_line(150e3);
                 this.config.update_graph();
         });
 
@@ -163,7 +179,7 @@ class Confirmed {
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('logarithmic');
-                this.config.clear_constant_line();
+                this.config.set_constant_line(150e3);
                 this.config.update_graph();
         });
 
