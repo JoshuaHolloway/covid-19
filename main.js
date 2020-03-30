@@ -97,22 +97,24 @@ class Config {
                 callback: (val, idx, vals) => numberWithCommas(val)
             }
         }
-    //     else {
-    //         this._.options.scales.yAxes[0].ticks = {
-    //             beginAtZero: true,
-    //             min: 0,
-    //             max: 3e5,
-    //             callback: (val, idx, vals) => {
-    //                 if(    val === 1e5 
-    //                     || val === 1e4 
-    //                     || val === 1e3 
-    //                     || val === 1e2 
-    //                     || val === 1e1) {
-    //                     return numberWithCommas(val);
-    //                 }
-    //             }
-    //         }
-    //     }
+        else {
+            this._.options.scales.yAxes[0].ticks = {
+                autoSkip: false,
+                beginAtZero: false,
+                min: 1,
+                max: 150e3,
+                callback: (val, idx, vals) => {
+                    if (val === 15e4 ||
+                        val === 10e4 ||
+                        val === 10e3 ||
+                        val === 10e2 ||
+                        val === 10e1 ||
+                        val === 10e0
+                    )
+                        return numberWithCommas(val);
+                }
+            }
+        }
     };
     clear_constant_line = () => this._.options.annotation = {};
     set_constant_line = (val) => {
