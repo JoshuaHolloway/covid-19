@@ -174,6 +174,9 @@ class Confirmed {
     get_current_x = function() {
         return this.x[this.x.length-1].val;
     };
+    get_current_dx = function() {
+        return this.dx[this.dx.length-1].val;
+    };
     get_current_qx = function() {
         return this.qx[this.qx.length-1].val;
     };
@@ -313,6 +316,44 @@ async function get_data() {
             growth_factor = null;       
         confirmed.qx.push({date: date_dx1, val: growth_factor});
     }
+
+
+    // Total number of cases today:
+    const yesterday_x = confirmed.get_current_x();
+
+    // Number of new cases yesterday:
+    const yesterday_dx = confirmed.get_current_dx();
+
+    // Yesterdays growth rate:
+    const yesterday_qx = confirmed.get_current_qx();
+
+    // Expected new cases today (based on yesterdays growth-rate):
+    const today_expected_dx = Math.round(yesterday_dx * yesterday_qx);
+
+    // Expected total number of cases today:
+    const today_expected_x = yesterday_x + today_expected_dx;
+
+    // console.log(`Number of total cases yesterday: ${yesterday_x}`);
+    // console.log(`Number of new cases yesterday: ${yesterday_dx}`);
+    // console.log(`Growth rate yesterday: ${yesterday_qx}`);
+    // console.log(`Expected new cases today: ${today_expected_dx}`);
+    // console.log(`Expected total cases today: ${today_expected_x}`);
+
+    // Display results
+    const date = confirmed.get_x()[1][confirmed.get_x()[1].length-1].split('-');
+    const yesterday = parseInt(date[2],10);
+    const today = yesterday + 1;
+    const month = months[parseInt(date[1],10)-1];
+
+    document.getElementById('cases-text-current').innerHTML = 
+        `Total Confirmed Cases Yesderday (${month}-${yesterday}): ${numberWithCommas(yesterday_x)}`;
+
+    document.getElementById('cases-text-predicted').innerHTML = 
+        `<u>Expected Total Cases Today</u> (${month}-${today}): 
+            <u><b>${numberWithCommas(today_expected_x)}</b></u>`;
+    
+    document.getElementById('cases-text-growth-factor').innerHTML = 
+        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${yesterday_qx.toFixed(2)}`;
 }
 //===============================================
 async function setup_charts() {
