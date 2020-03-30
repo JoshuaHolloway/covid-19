@@ -48,9 +48,7 @@ class Config {
                     },
                 }]
             },
-            
-        },
-        
+        },       
     };
 
     // Constructor (initialize graph)
@@ -62,23 +60,8 @@ class Config {
         this.set_y_label(y_axis_label);
         this.set_y_scale_type(y_scale_type);
         this.set_x_labels(x_labels)
-        
-        
-        this._.data.datasets[0].data = data_set;
-        this._.options.annotation = {
-            annotations: [{
-                type: 'line',
-                mode: 'horizontal',
-                scaleID: 'y-axis-0',
-                value: 150e3,
-                borderColor: 'rgb(75, 192, 192)',
-                borderWidth: 4,
-                label: {
-                enabled: false,
-                content: 'Test label'
-                }
-            }]
-        };
+        this.set_dataset([data_set]);
+        this.set_constant_line(150e3);
     };
 
     // Change dataset
@@ -86,7 +69,6 @@ class Config {
 
         // reset config.data.datasets field
         this._.data.datasets = [];
-        //this._.data.datasets[0].data = datasets.pop();
 
         // push datasets onto config.data.datasets field
         datasets.forEach((dataset, idx, datasets) => {
@@ -109,15 +91,12 @@ class Config {
     set_chart_type = (graph_type) => this._.type = graph_type;
     set_y_scale_type = (y_scale_type) => {
         this._.options.scales.yAxes[0].type = y_scale_type
-
-    //    if(y_scale_type == 'linear') {
-    //         this._.options.scales.yAxes[0].ticks = {
-    //             beginAtZero: false,
-    //             callback: (val, idx, vals) => {
-    //                 return numberWithCommas(val);
-    //             }
-    //         }
-    //     }
+       if(y_scale_type == 'linear') {
+            this._.options.scales.yAxes[0].ticks = {
+                beginAtZero: false,
+                callback: (val, idx, vals) => numberWithCommas(val)
+            }
+        }
     //     else {
     //         this._.options.scales.yAxes[0].ticks = {
     //             beginAtZero: true,
