@@ -144,6 +144,13 @@ class Confirmed {
     get_current_qx = function() {
         return this.qx[this.qx.length-1].val;
     };
+    get_x_axis_for_sigmoidal_regression = function() {
+        const new_length = 2*this.x.length-1;
+        const new_x_axis = [];
+        for (let i = 0; i < new_length; i++)
+            new_x_axis.push(i);
+        return new_x_axis;
+    };
     init_config = () => {
 
         this.config =  new Config(
@@ -205,6 +212,17 @@ class Confirmed {
                 this.config.update_graph();
         });
 
+        // Click-Event callback [growth-factor]
+        document.getElementById('pill-predict')
+            .addEventListener('click', () => {
+                this.config.set_dataset([this.get_x()[0], sigmoidal_regression]);
+                this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
+                this.config.set_chart_type('line');
+                this.config.set_y_scale_type('linear');
+                this.config.clear_constant_line();
+                this.config.update_graph();
+        });
+
     };   
 };
 const confirmed = new Confirmed();
@@ -233,7 +251,7 @@ async function get_data() {
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
         // Start on March 1st
-        if(idx > 38) {
+        if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
             recovered.x.push({'date': elem.date, 'val': elem.recovered});
