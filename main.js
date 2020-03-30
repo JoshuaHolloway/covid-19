@@ -167,6 +167,16 @@ class Confirmed {
                 this.config.update_graph();
         });
 
+        // Click-Event callback [growth-factor]
+        document.getElementById('pill-growth')
+            .addEventListener('click', () => {
+                this.config.set_dataset([this.get_qx()[0]]);
+                this.config.set_x_labels(this.get_qx()[1]);
+                this.config.set_chart_type('bar');
+                this.config.set_y_scale_type('linear');
+                this.config.update_graph();
+        });
+
     };   
 };
 const confirmed = new Confirmed();
