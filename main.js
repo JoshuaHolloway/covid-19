@@ -145,10 +145,12 @@ class Confirmed {
         return this.qx[this.qx.length-1].val;
     };
     get_x_axis_for_sigmoidal_regression = function() {
+        const dates = this.get_x()[1];
+        console.log(dates);
         const new_length = 2*this.x.length-1;
         const new_x_axis = [];
         for (let i = 0; i < new_length; i++)
-            new_x_axis.push(i);
+            new_x_axis.push(hard_coded_dates[i]);
         return new_x_axis;
     };
     init_config = () => {
