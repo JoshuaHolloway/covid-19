@@ -71,9 +71,11 @@ class Config {
         // push datasets onto config.data.datasets field
     };
 
-    // Update graph
-
-    
+    set_y_scale_type = (y_scale_type) => {
+        console.log('set_y_scale_type:');
+        this._.options.scales.yAxes[0].type = y_scale_type;
+        console.log(this._);
+    };
 
     update_graph = () => {
         window.myLine.update();
@@ -100,16 +102,46 @@ class Confirmed {
     get_current_qx = function() {
         return this.qx[this.qx.length-1].val;
     };
-
     init_config = () => {
-        const config___ = new Config(this.get_x()[0], 'line', 'linear', this.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
-        this.config =  config___;
 
-        // bind to canvas context
+        this.config =  new Config(
+            this.get_x()[0], 
+            'line', 
+            'linear', 
+            this.get_x()[1], 
+            'Total Confirmed Cases', 
+            'Total Confirmed Cases', 
+            'Total Confirmed Cases'
+        );
+
+        // Bind to canvas context
         const ctx = document.getElementById('canvas').getContext('2d');
         window.myLine = new Chart(ctx, this.config._);
         confirmed.config.update_graph();
+
+        // Click-Event callback [linear]
+        document.getElementById('pill-linear')
+            .addEventListener('click', () => {
+                this.config.set_y_scale_type('linear');
+                this.config.update_graph();
+        });
+
+        // Click-Event callback [logarithmic]
+        document.getElementById('pill-log')
+            .addEventListener('click', () => {
+                console.log('logarithmic clicked');
+                console.log(this);
+                this.config.set_y_scale_type('logarithmic');
+                this.config.update_graph();
+        });
+
     };
+    update_graph = () => {
+        console.log('update graph function');
+        this.config.update_graph
+    };
+    set_y_scale_type = (y_scale_type) => this.config.set_y_scale_type(y_scale_type);    
+    modify_dataset = (datasets) => this.config.modify_dataset(datasets);      
 };
 const confirmed = new Confirmed();
 //===============================================
@@ -170,41 +202,13 @@ async function setup_charts() {
     // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
-
     // Initialize config object
     confirmed.init_config();
-
-    // Initialize confirmed graph (with linear data)
-    // const initialize_graph = _ => {
-    //     var ctx = document.getElementById('canvas').getContext('2d');
-    //     window.myLine = new Chart(ctx, confirmed.config.config);
-    //     confirmed.config.update_graph();
-    // };
-    // initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
     // Initialize deaths graph (with linear data)
 
     // Initialize (3rd) graph 
 
-    // Setup click-event callbacks (confirmed)
-    chart_callback__linear();
-    chart_callback__log();
-    // chart_callback__change();
+
 }
-//===============================================
-const chart_callback__linear = () => {
-    // If clicked on then update window display
-    const pill = document.getElementById('pill-linear');
-    pill.addEventListener('click', () => {
-        confirmed.config.update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1]);
-    });
-};
-//===============================================
-const chart_callback__log = () => {
-    const pill = document.getElementById('pill-log');
-    pill.addEventListener('click', () => {
-        console.log('CLICKED log');
-        confirmed.config.update_graph(confirmed.get_x()[0], 'line', 'logarithmic', confirmed.get_x()[1]);
-    });
-};
 //===============================================
