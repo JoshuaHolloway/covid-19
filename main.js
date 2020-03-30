@@ -63,13 +63,23 @@ class Config {
     };
 
     // Change dataset
-    modify_dataset = ([datasets]) => {
+    set_dataset = (datasets) => {
 
         // reset config.data.datasets field
-        this._.data.datasets = null;
+        //this._.data.datasets = [];
+        //this._.data.datasets[0].data = datasets.pop();
 
         // push datasets onto config.data.datasets field
+        datasets.forEach((dataset, idx, datasets) => {
+            this._.data.datasets.push(dataset);
+        });
     };
+
+    set_x_labels = (x_labels) => {
+        this._.data.labels = x_labels;
+    };
+
+    set_chart_type = (graph_type) => this._.type = graph_type;
 
     set_y_scale_type = (y_scale_type) => {
         console.log('set_y_scale_type:');
@@ -122,6 +132,9 @@ class Confirmed {
         // Click-Event callback [linear]
         document.getElementById('pill-linear')
             .addEventListener('click', () => {
+                this.config.set_dataset([this.get_x()[0]]);
+                this.config.set_x_labels(this.get_x()[1]);
+                this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
                 this.config.update_graph();
         });
@@ -129,19 +142,24 @@ class Confirmed {
         // Click-Event callback [logarithmic]
         document.getElementById('pill-log')
             .addEventListener('click', () => {
-                console.log('logarithmic clicked');
-                console.log(this);
+                this.config.set_dataset([this.get_x()[0]]);
+                this.config.set_x_labels(this.get_x()[1]);
+                this.config.set_chart_type('line');
                 this.config.set_y_scale_type('logarithmic');
                 this.config.update_graph();
         });
 
-    };
-    update_graph = () => {
-        console.log('update graph function');
-        this.config.update_graph
-    };
-    set_y_scale_type = (y_scale_type) => this.config.set_y_scale_type(y_scale_type);    
-    modify_dataset = (datasets) => this.config.modify_dataset(datasets);      
+        // Click-Event callback [change]
+        document.getElementById('pill-change')
+            .addEventListener('click', () => {
+                this.config.set_dataset([this.get_dx()[0]]);
+                this.config.set_x_labels(this.get_dx()[1]);
+                this.config.set_chart_type('bar');
+                this.config.set_y_scale_type('linear');
+                this.config.update_graph();
+        });
+
+    };   
 };
 const confirmed = new Confirmed();
 //===============================================
