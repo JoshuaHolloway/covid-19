@@ -160,7 +160,6 @@ class Confirmed {
     };
     get_x_axis_for_sigmoidal_regression = function() {
         const dates = this.get_x()[1];
-        console.log(dates);
         const new_length = 2*this.x.length-1;
         const new_x_axis = [];
         for (let i = 0; i < new_length; i++)
@@ -231,11 +230,16 @@ class Confirmed {
         // Click-Event callback [growth-factor]
         document.getElementById('pill-predict')
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_x()[0], sigmoidal_regression]);
+                const x = this.get_x()[0];
+                console.log(x);
+                const mirrored = mirror(x);
+                console.log(mirrored);
+
+                this.config.set_dataset([[], sigmoidal_regression]);
                 this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
-                this.config.clear_constant_line();
+                this.config.set_constant_line(200e3);
                 this.config.update_graph();
         });
 
@@ -306,7 +310,7 @@ async function setup_charts() {
     // Initialize deaths graph (with linear data)
 
     // Initialize (3rd) graph 
-
-
 }
 //===============================================
+
+
