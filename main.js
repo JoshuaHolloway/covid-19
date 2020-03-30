@@ -2,6 +2,9 @@
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
 class Config {
+
+    // Properties
+    num_datasets = 0;
     config = {
         type: 'line',
         data: {
@@ -48,7 +51,8 @@ class Config {
         }
     };
 
-    update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
+    // Constructor (initialize graph)
+    constructor(data_set, graph_type, y_scale_type='linear', y_labels=null, title=null, label=null, y_axis_label=null) {
         this.config.options.title.text = title;
         this.config.data.datasets[0].label = label;
         this.config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
@@ -56,31 +60,58 @@ class Config {
         this.config.data.labels = y_labels;
         this.config.type = graph_type;
         this.config.data.datasets[0].data = data_set;
+    };
+
+    // Change dataset
+    modify_dataset = ([datasets]) => {
+
+        // reset config.data.datasets field
+        this.config.data.datasets = null;
+
+        // push datasets onto config.data.datasets field
+    };
+
+    // Update graph
+
+    
+
+    update_graph = () => {
         window.myLine.update();
     };
 };
 //===============================================
-const confirmed = {
-    x: [],
-    dx: [],
-    qx: [],
-    get_x: function() {
+class Confirmed {
+    config = null;
+    x = [];
+    dx = [];
+    qx = [];
+    get_x = function() {
         return[this.x.map(v => v.val),  this.x.map(v => v.date)];
-    },
-    get_dx: function() {
+    };
+    get_dx = function() {
         return [this.dx.map(v => v.val), this.dx.map(v => v.date)];
-    },
-    get_qx: function() {
+    };
+    get_qx = function() {
         return [this.qx.map(v => v.val), this.qx.map(v => v.date)];
-    },
-    get_current_x: function() {
+    };
+    get_current_x = function() {
         return this.x[this.x.length-1].val;
-    },
-    get_current_qx: function() {
+    };
+    get_current_qx = function() {
         return this.qx[this.qx.length-1].val;
-    },
-    config: new Config()
+    };
+
+    init_config = () => {
+        const config___ = new Config(this.get_x()[0], 'line', 'linear', this.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
+        this.config =  config___;
+
+        // bind to canvas context
+        const ctx = document.getElementById('canvas').getContext('2d');
+        window.myLine = new Chart(ctx, this.config.config);
+        confirmed.config.update_graph();
+    };
 };
+const confirmed = new Confirmed();
 //===============================================
 const deaths = {
     x: [{ date: '', val: null}],
@@ -139,13 +170,17 @@ async function setup_charts() {
     // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
+
+    // Initialize config object
+    confirmed.init_config();
+
     // Initialize confirmed graph (with linear data)
-    const initialize_graph = _ => {
-        var ctx = document.getElementById('canvas').getContext('2d');
-        window.myLine = new Chart(ctx, confirmed.config.config);
-        confirmed.config.update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
-    };
-    initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
+    // const initialize_graph = _ => {
+    //     var ctx = document.getElementById('canvas').getContext('2d');
+    //     window.myLine = new Chart(ctx, confirmed.config.config);
+    //     confirmed.config.update_graph();
+    // };
+    // initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
 
     // Initialize deaths graph (with linear data)
 
