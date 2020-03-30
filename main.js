@@ -34,61 +34,65 @@ const recovered = {
     qx: [{ date: '', val: null}]
 };
 //===============================================
-let config = {
-    type: 'line',
-    data: {
-        labels: null,
-        datasets: [{
-            label: null,
-            backgroundColor: window.chartColors.red,
-            borderColor: window.chartColors.red,
-            data: null,
-            fill: false,
-        }]
-    },
-    options: {
-        responsive: true,
-        title: {
-            display: false,
-            text: null
-        },
-        tooltips: {
-            mode: 'index',
-            intersect: false,
-        },
-        hover: {
-            mode: 'nearest',
-            intersect: true
-        },
-        scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: false,
-                    labelString: null
-                }
-            }],
-            yAxes: [{
-                display: true,
-                type: 'linear',
-                scaleLabel: {
-                    display: true,
-                    labelString: null,
-                },
+class Config {
+    config = {
+        type: 'line',
+        data: {
+            labels: null,
+            datasets: [{
+                label: null,
+                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                data: null,
+                fill: false,
             }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: false,
+                text: null
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: false,
+                        labelString: null
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    type: 'linear',
+                    scaleLabel: {
+                        display: true,
+                        labelString: null,
+                    },
+                }]
+            }
         }
     }
 };
 //===============================================
+const config_confirmed = new Config();
+//===============================================
 const update_graph = (data_set, graph_type, y_scale_type='linear', y_labels=confirmed.get_x[1], title=null, label=null, y_axis_label=null) => {
-    config.options.title.text = title;
-    config.data.datasets[0].label = label;
-    config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+    config_confirmed.config.options.title.text = title;
+    config_confirmed.config.data.datasets[0].label = label;
+    config_confirmed.config.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
 
-    config.options.scales.yAxes[0].type = y_scale_type;
-    config.data.labels = y_labels;
-    config.type = graph_type;
-    config.data.datasets[0].data = data_set;
+    config_confirmed.config.options.scales.yAxes[0].type = y_scale_type;
+    config_confirmed.config.data.labels = y_labels;
+    config_confirmed.config.type = graph_type;
+    config_confirmed.config.data.datasets[0].data = data_set;
     window.myLine.update();
 };
 //===============================================
@@ -140,7 +144,7 @@ async function setup_charts() {
     // Initialize confirmed graph (with linear data)
     const initialize_graph = _ => {
         var ctx = document.getElementById('canvas').getContext('2d');
-        window.myLine = new Chart(ctx, config);
+        window.myLine = new Chart(ctx, config_confirmed.config);
         update_graph(confirmed.get_x()[0], 'line', 'linear', confirmed.get_x()[1], 'Total Confirmed Cases', 'Total Confirmed Cases', 'Total Confirmed Cases');
     };
     initialize_graph(confirmed.get_x()[0], confirmed.get_x()[1]);  
