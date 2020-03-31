@@ -107,14 +107,12 @@ class Config {
 
             // set label
             console.log(datasets_labels);
-            if (datasets_labels.length === 0) {
-                this._.options.legend = {
-                    display: false
-                };
-                console.log(this._);
-            }
-            else
+            if (datasets_labels.length === 0)
+                this._.options.legend = { display: false };
+            else {
+                this._.options.legend = { display: true };
                 this._.data.datasets[idx].label = datasets_labels[idx];
+            }
         });
     };
     set_chart_type = chart_type => this._.type = chart_type;
@@ -275,12 +273,12 @@ class Graph {
                 this.config.update_graph();
         });
 
-        // Click-Event callback [growth-factor]
+        // Click-Event callback [prediction]
         document.getElementById(`pill-predict-${this.name}`)
             .addEventListener('click', () => {
                 // const x = this.get_x()[0];
                 // const mirrored = mirror(x);
-                this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30]);
+                this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30], ['dataset-1', 'datset-2']);
                 this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
