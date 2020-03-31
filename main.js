@@ -158,8 +158,7 @@ class Config {
     };
 };
 //===============================================
-let window_my_line;
-class Confirmed {
+class Graph {
     name = '';
     constructor(name) {
         this.name = name;
@@ -278,14 +277,8 @@ class Confirmed {
 
     };   
 };
-const confirmed = new Confirmed('confirmed');
-const confirmed2 = new Confirmed('death');
-//===============================================
-const deaths = {
-    x: [{ date: '', val: null}],
-    dx: [{ date: '', val: null}],
-    qx: [{ date: '', val: null}]
-};
+const confirmed = new Graph('confirmed');
+const deaths = new Graph('death');
 //===============================================
 const recovered = {
     x: [{ date: '', val: null}],
@@ -307,10 +300,10 @@ async function get_data() {
         // Start on March 1st
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
-            confirmed2.x.push({'date': elem.date, 'val': elem.confirmed});
-
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
-            recovered.x.push({'date': elem.date, 'val': elem.recovered});
+
+            //deaths.x.push({'date': elem.date, 'val': elem.deaths});
+            //recovered.x.push({'date': elem.date, 'val': elem.recovered});
         }
     });
 
@@ -321,7 +314,7 @@ async function get_data() {
         const date_x1 = confirmed.x[i].date;
         const dx = x1 - x0;
         confirmed.dx.push({'date': date_x1, 'val': dx});
-        confirmed2.dx.push({'date': date_x1, 'val': dx});
+        //deaths.dx.push({'date': date_x1, 'val': dx});
     }
 
     // [qx] Growth Factor
@@ -333,7 +326,7 @@ async function get_data() {
         if (dx0 < 1e-6)
             growth_factor = null;       
         confirmed.qx.push({date: date_dx1, val: growth_factor});
-        confirmed2.qx.push({date: date_dx1, val: growth_factor});
+        //deaths.qx.push({date: date_dx1, val: growth_factor});
     }
 
     // Total number of cases today:
@@ -375,7 +368,7 @@ async function setup_charts() {
 
     // Initialize config object
     confirmed.init_config('canvas-confirmed');
-    confirmed2.init_config('canvas-deaths');
+    deaths.init_config('canvas-deaths');
 
     // Initialize deaths graph (with linear data)
 
