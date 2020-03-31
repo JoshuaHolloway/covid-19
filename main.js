@@ -178,6 +178,7 @@ class Graph {
     x = [];
     dx = [];
     qx = [];
+    px = []; // TODO: Add prediction data here
     get_x = function() {
         return[this.x.map(v => v.val),  this.x.map(v => v.date)];
     };
@@ -202,6 +203,11 @@ class Graph {
         for (let i = 0; i < new_length; i++)
             new_x_axis.push(hard_coded_dates[i]);
         return new_x_axis;
+    };
+
+    // TODO: Compute sigmoidal regression:
+    compute_sigmoidal_regression = () => {
+        // TODO: Add code here
     };
     
     init_config = (y_axis_label, x_line, qx_line, px_line) => {
@@ -270,8 +276,6 @@ class Graph {
         const pill_predict = document.getElementById(`pill-predict-${this.name}`);
         if (pill_predict) {
             pill_predict.addEventListener('click', () => {
-                // const x = this.get_x()[0];
-                // const mirrored = mirror(x);
                 this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30], ['dataset-1', 'datset-2']);
                 this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
                 this.config.set_chart_type('line');
