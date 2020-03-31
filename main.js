@@ -286,11 +286,11 @@ class Graph {
         const today = yesterday + 1;
         const month = months[parseInt(date[1],10)-1];
 
-        document.getElementById(`josh-${name}`).innerHTML = 
+        document.getElementById(`text-${name}-1`).innerHTML = 
             `(${month}-${yesterday}): ${numberWithCommas(yesterday_x)}`;
 
-        document.getElementById(`cases-text-predicted-${name}`).innerHTML = 
-            `<u>Expected Total Cases Today</u> (${month}-${today}): 
+        document.getElementById(`text-${name}-2`).innerHTML = 
+            `(${month}-${today}): 
                 <u><b>${numberWithCommas(today_expected_x)}</b></u>`;
         
         document.getElementById(`cases-text-growth-factor-${name}`).innerHTML = 
