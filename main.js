@@ -72,7 +72,7 @@ class Config {
     };
 
     // Change dataset
-    set_dataset = (datasets) => {
+    set_dataset = datasets => {
 
         // reset config.data.datasets field
         this._.data.datasets = [];
@@ -100,14 +100,12 @@ class Config {
             );
         });
     };
-
-    set_chart_type = (chart_type) => this._.type = graph_type;
-    set_chart_title = (chart_title) => this._.options.title.text = chart_title;
-    set_dataset_label = (dataset_label) => this._.data.datasets[0].label = dataset_label;
-    set_y_label = (y_axis_label) => this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
-    set_x_labels = (x_labels) => this._.data.labels = x_labels;
-    set_chart_type = (graph_type) => this._.type = graph_type;
-    set_y_scale_type = (y_scale_type) => {
+    set_chart_type = chart_type => this._.type = chart_type;
+    set_chart_title = chart_title => this._.options.title.text = chart_title;
+    set_dataset_label = dataset_label => this._.data.datasets[0].label = dataset_label;
+    set_y_label = y_axis_label => this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
+    set_x_labels = x_labels => this._.data.labels = x_labels;
+    set_y_scale_type = y_scale_type => {
         this._.options.scales.yAxes[0].type = y_scale_type
        if(y_scale_type == 'linear') {
             this._.options.scales.yAxes[0].ticks = {
@@ -134,8 +132,8 @@ class Config {
             }
         }
     };
-    clear_constant_line = () => this._.options.annotation = {};
-    set_constant_line = (val) => {
+    clear_constant_line = _ => this._.options.annotation = {};
+    set_constant_line = val => {
         // https://github.com/chartjs/chartjs-plugin-annotation
         this._.options.annotation = {
             annotations: [{
@@ -152,10 +150,7 @@ class Config {
             }]
         }
     };
-
-    update_graph = () => {
-        this.myLine.update();
-    };
+    update_graph = _ => this.myLine.update();
 };
 //===============================================
 class Graph {
@@ -278,15 +273,10 @@ class Graph {
 
     };   
 };
+//===============================================
 const confirmed = new Graph('confirmed');
 const deaths = new Graph('death');
-//===============================================
-const recovered = {
-    x: [{ date: '', val: null}],
-    dx: [{ date: '', val: null}],
-    qx: [{ date: '', val: null}]
-};
-//===============================================
+const recovered = new Graph('recovered');
 //===============================================
 setup_charts().catch(err => console.log(err));
 //===============================================
@@ -302,31 +292,28 @@ async function get_data() {
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
-
-            //deaths.x.push({'date': elem.date, 'val': elem.deaths});
             //recovered.x.push({'date': elem.date, 'val': elem.recovered});
         }
     });
 
     // [dx] Change
     for (let i = 1; i < confirmed.x.length; ++i) {
-        const x0 = confirmed.x[i-1].val;
-        const x1 = confirmed.x[i].val;
-        const date_x1 = confirmed.x[i].date;
-        const dx = x1 - x0;
-        confirmed.dx.push({'date': date_x1, 'val': dx});
+        confirmed.dx.push({'date': confirmed.x[i].date, 'val': confirmed.x[i].val - confirmed.x[i-1].val});
+        deaths.dx.push({'date': deaths.x[i].date, 'val': deaths.x[i].val - deaths.x[i-1].val});
         //deaths.dx.push({'date': date_x1, 'val': dx});
     }
 
     // [qx] Growth Factor
     for (let i = 1; i < confirmed.dx.length; ++i) {
-        const dx0 = confirmed.dx[i-1].val;
-        const dx1 = confirmed.dx[i].val;
-        const date_dx1 = confirmed.dx[i].date;
-        let growth_factor = dx1 / dx0;
-        if (dx0 < 1e-6)
-            growth_factor = null;       
-        confirmed.qx.push({date: date_dx1, val: growth_factor});
+        let growth_factor = confirmed.dx[i].val / confirmed.dx[i-1].val;
+        if (dx0 < 1e-6) growth_factor = null;
+        confirmed.qx.push({date: confirmed.dx[i].date, val: growth_factor});
+
+        growth_factor = deaths.dx[i].val / deaths.dx[i-1].val;
+        if (dx0 < 1e-6) growth_factor = null;
+        deaths.qx.push({date: deaths.dx[i].date, val: growth_factor});
+
+        
         //deaths.qx.push({date: date_dx1, val: growth_factor});
     }
 
