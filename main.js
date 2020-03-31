@@ -196,17 +196,17 @@ class Graph {
         return new_x_axis;
     };
     
-    init_config = (x_line, qx_line, px_line) => {
+    init_config = (y_axis_label, x_line, qx_line, px_line) => {
 
         this.config =  new Config(
             x_line, qx_line, px_line,
-            this.get_x()[0],
-            'line',
-            'linear',
-            this.get_x()[1],
-            'Total Confirmed Cases',
-            'Total Confirmed Cases',
-            'Total Confirmed Cases'
+            this.get_x()[0],            // data_set
+            'line',                     // chart_type
+            'linear',                   // y_scale_type='linear'
+            this.get_x()[1],            // x_labels=null
+            'Total Confirmed Cases',    // chart_title=null
+            'Total Confirmed Cases',    // dataset_label=null
+            y_axis_label                // y_axis_label=null            
         );
 
         // Bind to canvas context
@@ -352,8 +352,8 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize config object
-    confirmed.init_config(200e3, 1, 100000);
-    deaths.init_config(4e3, 1, 100000);
+    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 100000);
+    deaths.init_config('Total Deaths', 3.5e3, 1, 100000);
 
     // Initialize deaths graph (with linear data)
 
