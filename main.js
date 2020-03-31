@@ -196,7 +196,7 @@ class Graph {
         return new_x_axis;
     };
     
-    init_config = (canvas_name, x_line, qx_line, px_line) => {
+    init_config = (x_line, qx_line, px_line) => {
 
         this.config =  new Config(
             x_line, qx_line, px_line,
@@ -210,7 +210,7 @@ class Graph {
         );
 
         // Bind to canvas context
-        const ctx = document.getElementById(canvas_name).getContext('2d');
+        const ctx = document.getElementById(`canvas-${this.name}`).getContext('2d');
         //window.myLine = new Chart(ctx, this.config._);
         //window_my_line = new Chart(ctx, this.config._);
         this.config.myLine = new Chart(ctx, this.config._);
@@ -307,8 +307,7 @@ class Graph {
 };
 //===============================================
 const confirmed = new Graph('confirmed');
-const deaths = new Graph('death');
-const recovered = new Graph('recovered');
+const deaths = new Graph('deaths');
 //===============================================
 setup_charts().catch(err => console.log(err));
 //===============================================
@@ -353,8 +352,8 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize config object
-    confirmed.init_config('canvas-confirmed', 200e3, 1, 100000);
-    deaths.init_config('canvas-deaths', 4e3, 1, 100000);
+    confirmed.init_config(200e3, 1, 100000);
+    deaths.init_config(4e3, 1, 100000);
 
     // Initialize deaths graph (with linear data)
 
