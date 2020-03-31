@@ -293,8 +293,8 @@ class Graph {
             `(${month}-${today}): 
                 <u><b>${numberWithCommas(today_expected_x)}</b></u>`;
         
-        document.getElementById(`cases-text-growth-factor-${name}`).innerHTML = 
-            `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${yesterday_qx.toFixed(2)}`;
+        document.getElementById(`text-${name}-3`).innerHTML = 
+            `${yesterday_qx.toFixed(2)}`;
 
     };
 };
