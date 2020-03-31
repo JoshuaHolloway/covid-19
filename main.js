@@ -64,14 +64,13 @@ class Config {
     myLine;
 
     // Constructor (initialize graph)
-    constructor(x_line, qx_line, px_line, data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
+    constructor(x_line, qx_line, px_line, data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, y_axis_label=null) {
         this.set_chart_type(chart_type);
         this.set_chart_title(chart_title);
-        this.set_dataset_label(dataset_label);
         this.set_y_label(y_axis_label);
         this.set_y_scale_type(y_scale_type);
         this.set_x_labels(x_labels)
-        this.set_dataset([data_set]);
+        this.set_dataset([data_set], []); // [data_set], [dataset_Label]
         this.set_constant_line(x_line);
         this.x_line = x_line;
         this.qx_line = qx_line;
@@ -79,7 +78,7 @@ class Config {
     };
 
     // Change dataset
-    set_dataset = datasets => {
+    set_dataset = (datasets, datasets_labels) => {
 
         // reset config.data.datasets field
         this._.data.datasets = [];
@@ -105,11 +104,22 @@ class Config {
                     fill: false,
                 }
             );
+
+            // set label
+            console.log(datasets_labels);
+            if (datasets_labels.length === 0) {
+                this._.options.legend = {
+                    display: false
+                };
+                console.log(this._);
+            }
+            else
+                this._.data.datasets[idx].label = datasets_labels[idx];
         });
     };
     set_chart_type = chart_type => this._.type = chart_type;
     set_chart_title = chart_title => this._.options.title.text = chart_title;
-    set_dataset_label = dataset_label => this._.data.datasets[0].label = dataset_label;
+    
     set_y_label = y_axis_label => this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
     set_x_labels = x_labels => this._.data.labels = x_labels;
     set_y_scale_type = y_scale_type => {
@@ -205,7 +215,7 @@ class Graph {
             'linear',                   // y_scale_type='linear'
             this.get_x()[1],            // x_labels=null
             'Total Confirmed Cases',    // chart_title=null
-            'Total Confirmed Cases',    // dataset_label=null
+            'JOSH',    // dataset_label=null
             y_axis_label                // y_axis_label=null            
         );
 
