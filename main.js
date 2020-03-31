@@ -160,6 +160,11 @@ class Config {
 //===============================================
 let window_my_line;
 class Confirmed {
+    name = '';
+    constructor(name) {
+        this.name = name;
+    };
+    
     config = null;
     x = [];
     dx = [];
@@ -215,7 +220,7 @@ class Confirmed {
         this.config.update_graph();
 
         // Click-Event callback [linear]
-        document.getElementById('pill-linear')
+        document.getElementById(`pill-linear-${this.name}`)
             .addEventListener('click', () => {
                 this.config.set_dataset([this.get_x()[0]]);
                 this.config.set_x_labels(this.get_x()[1]);
@@ -226,7 +231,7 @@ class Confirmed {
         });
 
         // Click-Event callback [logarithmic]
-        document.getElementById('pill-log')
+        document.getElementById(`pill-log-${this.name}`)
             .addEventListener('click', () => {
                 this.config.set_dataset([this.get_x()[0]]);
                 this.config.set_x_labels(this.get_x()[1]);
@@ -237,7 +242,7 @@ class Confirmed {
         });
 
         // Click-Event callback [change]
-        document.getElementById('pill-change')
+        document.getElementById(`pill-change-${this.name}`)
             .addEventListener('click', () => {
                 this.config.set_dataset([this.get_dx()[0]]);
                 this.config.set_x_labels(this.get_dx()[1]);
@@ -248,7 +253,7 @@ class Confirmed {
         });
 
         // Click-Event callback [growth-factor]
-        document.getElementById('pill-growth')
+        document.getElementById(`pill-growth-${this.name}`)
             .addEventListener('click', () => {
                 this.config.set_dataset([this.get_qx()[0]]);
                 this.config.set_x_labels(this.get_qx()[1]);
@@ -259,7 +264,7 @@ class Confirmed {
         });
 
         // Click-Event callback [growth-factor]
-        document.getElementById('pill-predict')
+        document.getElementById(`pill-predict-${this.name}`)
             .addEventListener('click', () => {
                 // const x = this.get_x()[0];
                 // const mirrored = mirror(x);
@@ -273,8 +278,8 @@ class Confirmed {
 
     };   
 };
-const confirmed = new Confirmed();
-const confirmed2 = new Confirmed();
+const confirmed = new Confirmed('confirmed');
+const confirmed2 = new Confirmed('death');
 //===============================================
 const deaths = {
     x: [{ date: '', val: null}],
@@ -370,7 +375,7 @@ async function setup_charts() {
 
     // Initialize config object
     confirmed.init_config('canvas-confirmed');
-    //confirmed2.init_config('canvas-deaths');
+    confirmed2.init_config('canvas-deaths');
 
     // Initialize deaths graph (with linear data)
 
