@@ -60,7 +60,7 @@ class Config {
     myLine;
 
     // Constructor (initialize graph)
-    constructor(data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
+    constructor(line_val, data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
         this.set_chart_type(chart_type);
         this.set_chart_title(chart_title);
         this.set_dataset_label(dataset_label);
@@ -68,7 +68,7 @@ class Config {
         this.set_y_scale_type(y_scale_type);
         this.set_x_labels(x_labels)
         this.set_dataset([data_set]);
-        this.set_constant_line(150e3);
+        this.set_constant_line(line_val);
     };
 
     // Change dataset
@@ -194,9 +194,10 @@ class Graph {
         return new_x_axis;
     };
     
-    init_config = (canvas_name) => {
+    init_config = (canvas_name, line_val) => {
 
         this.config =  new Config(
+            line_val,
             this.get_x()[0],
             'line',
             'linear',
@@ -367,8 +368,8 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize config object
-    confirmed.init_config('canvas-confirmed');
-    deaths.init_config('canvas-deaths');
+    confirmed.init_config('canvas-confirmed', 200e3);
+    deaths.init_config('canvas-deaths', 3e3);
 
     // Initialize deaths graph (with linear data)
 
