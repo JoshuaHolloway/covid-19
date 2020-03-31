@@ -188,7 +188,7 @@ class Confirmed {
             new_x_axis.push(hard_coded_dates[i]);
         return new_x_axis;
     };
-    init_config = () => {
+    init_config = (canvas_name) => {
 
         this.config =  new Config(
             this.get_x()[0], 
@@ -201,7 +201,7 @@ class Confirmed {
         );
 
         // Bind to canvas context
-        const ctx = document.getElementById('canvas').getContext('2d');
+        const ctx = document.getElementById(canvas_name).getContext('2d');
         window.myLine = new Chart(ctx, this.config._);
         confirmed.config.update_graph();
 
@@ -265,6 +265,7 @@ class Confirmed {
     };   
 };
 const confirmed = new Confirmed();
+const confirmed2 = new Confirmed();
 //===============================================
 const deaths = {
     x: [{ date: '', val: null}],
@@ -362,7 +363,8 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize config object
-    confirmed.init_config();
+    confirmed.init_config('canvas-confirmed');
+    confirmed2.init_config('canvas-deaths');
 
     // Initialize deaths graph (with linear data)
 
