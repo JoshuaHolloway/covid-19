@@ -213,7 +213,6 @@ class Graph {
             'linear',                   // y_scale_type='linear'
             this.get_x()[1],            // x_labels=null
             'Total Confirmed Cases',    // chart_title=null
-            'JOSH',    // dataset_label=null
             y_axis_label                // y_axis_label=null            
         );
 
@@ -360,8 +359,8 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize config object
-    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 100000);
-    deaths.init_config('Total Deaths', 3.5e3, 1, 100000);
+    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
+    deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
 
     // Initialize deaths graph (with linear data)
 
