@@ -2,7 +2,6 @@
 const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
 class Config {
-
     // Properties
     num_datasets = 0;
     _ = {
@@ -58,10 +57,10 @@ class Config {
             },
         },       
     };
+    myLine;
 
     // Constructor (initialize graph)
     constructor(data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
-        
         this.set_chart_type(chart_type);
         this.set_chart_title(chart_title);
         this.set_dataset_label(dataset_label);
@@ -154,9 +153,12 @@ class Config {
         }
     };
 
-    update_graph = () => window.myLine.update();
+    update_graph = () => {
+        this.myLine.update();
+    };
 };
 //===============================================
+let window_my_line;
 class Confirmed {
     config = null;
     x = [];
@@ -181,29 +183,36 @@ class Confirmed {
         return this.qx[this.qx.length-1].val;
     };
     get_x_axis_for_sigmoidal_regression = function() {
-        const dates = this.get_x()[1];
         const new_length = 2*this.x.length-1;
         const new_x_axis = [];
         for (let i = 0; i < new_length; i++)
             new_x_axis.push(hard_coded_dates[i]);
         return new_x_axis;
     };
+    
     init_config = (canvas_name) => {
 
         this.config =  new Config(
-            this.get_x()[0], 
-            'line', 
-            'linear', 
-            this.get_x()[1], 
-            'Total Confirmed Cases', 
-            'Total Confirmed Cases', 
+            this.get_x()[0],
+            'line',
+            'linear',
+            this.get_x()[1],
+            'Total Confirmed Cases',
+            'Total Confirmed Cases',
             'Total Confirmed Cases'
         );
 
         // Bind to canvas context
         const ctx = document.getElementById(canvas_name).getContext('2d');
-        window.myLine = new Chart(ctx, this.config._);
-        confirmed.config.update_graph();
+        //window.myLine = new Chart(ctx, this.config._);
+        //window_my_line = new Chart(ctx, this.config._);
+        this.config.myLine = new Chart(ctx, this.config._);
+
+        //window.myLine.push(new Chart(ctx, this.config._));
+        // console.log('window.myLine:');
+        // console.dir(window.myLine);
+
+        this.config.update_graph();
 
         // Click-Event callback [linear]
         document.getElementById('pill-linear')
@@ -293,6 +302,8 @@ async function get_data() {
         // Start on March 1st
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
+            confirmed2.x.push({'date': elem.date, 'val': elem.confirmed});
+
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
             recovered.x.push({'date': elem.date, 'val': elem.recovered});
         }
@@ -305,6 +316,7 @@ async function get_data() {
         const date_x1 = confirmed.x[i].date;
         const dx = x1 - x0;
         confirmed.dx.push({'date': date_x1, 'val': dx});
+        confirmed2.dx.push({'date': date_x1, 'val': dx});
     }
 
     // [qx] Growth Factor
@@ -316,8 +328,8 @@ async function get_data() {
         if (dx0 < 1e-6)
             growth_factor = null;       
         confirmed.qx.push({date: date_dx1, val: growth_factor});
+        confirmed2.qx.push({date: date_dx1, val: growth_factor});
     }
-
 
     // Total number of cases today:
     const yesterday_x = confirmed.get_current_x();
@@ -333,12 +345,6 @@ async function get_data() {
 
     // Expected total number of cases today:
     const today_expected_x = yesterday_x + today_expected_dx;
-
-    // console.log(`Number of total cases yesterday: ${yesterday_x}`);
-    // console.log(`Number of new cases yesterday: ${yesterday_dx}`);
-    // console.log(`Growth rate yesterday: ${yesterday_qx}`);
-    // console.log(`Expected new cases today: ${today_expected_dx}`);
-    // console.log(`Expected total cases today: ${today_expected_x}`);
 
     // Display results
     const date = confirmed.get_x()[1][confirmed.get_x()[1].length-1].split('-');
@@ -364,7 +370,7 @@ async function setup_charts() {
 
     // Initialize config object
     confirmed.init_config('canvas-confirmed');
-    confirmed2.init_config('canvas-deaths');
+    //confirmed2.init_config('canvas-deaths');
 
     // Initialize deaths graph (with linear data)
 
