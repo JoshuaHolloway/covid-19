@@ -232,7 +232,7 @@ class Graph {
         // Click-Event callback [linear]
         document.getElementById(`pill-linear-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_x()[0]]);
+                this.config.set_dataset([this.get_x()[0]], []);
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
@@ -243,7 +243,7 @@ class Graph {
         // Click-Event callback [logarithmic]
         document.getElementById(`pill-log-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_x()[0]]);
+                this.config.set_dataset([this.get_x()[0]], []);
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('logarithmic');
@@ -254,7 +254,7 @@ class Graph {
         // Click-Event callback [change]
         document.getElementById(`pill-change-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_dx()[0]]);
+                this.config.set_dataset([this.get_dx()[0]], []);
                 this.config.set_x_labels(this.get_dx()[1]);
                 this.config.set_chart_type('bar');
                 this.config.set_y_scale_type('linear');
@@ -265,7 +265,7 @@ class Graph {
         // Click-Event callback [growth-factor]
         document.getElementById(`pill-growth-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_qx()[0]]);
+                this.config.set_dataset([this.get_qx()[0]], []);
                 this.config.set_x_labels(this.get_qx()[1]);
                 this.config.set_chart_type('bar');
                 this.config.set_y_scale_type('linear');
