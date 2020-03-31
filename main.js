@@ -3,6 +3,10 @@ const url = 'https://pomber.github.io/covid19/timeseries.json';
 //===============================================
 class Config {
     // Properties
+    x_line = 0;
+    dx_line = 0;
+    qx_line = 0;
+    px_line = 0;
     num_datasets = 0;
     _ = {
         type: 'line',
@@ -60,7 +64,7 @@ class Config {
     myLine;
 
     // Constructor (initialize graph)
-    constructor(line_val, data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
+    constructor(x_line, qx_line, px_line, data_set, chart_type, y_scale_type='linear', x_labels=null, chart_title=null, dataset_label=null, y_axis_label=null) {
         this.set_chart_type(chart_type);
         this.set_chart_title(chart_title);
         this.set_dataset_label(dataset_label);
@@ -68,7 +72,10 @@ class Config {
         this.set_y_scale_type(y_scale_type);
         this.set_x_labels(x_labels)
         this.set_dataset([data_set]);
-        this.set_constant_line(line_val);
+        this.set_constant_line(x_line);
+        this.x_line = x_line;
+        this.qx_line = qx_line;
+        this.px_line = px_line;
     };
 
     // Change dataset
@@ -118,9 +125,9 @@ class Config {
                 autoSkip: false,
                 beginAtZero: false,
                 min: 1,
-                max: 150e3,
+                max: this.x_line,
                 callback: (val, idx, vals) => {
-                    if (val === 15e4 ||
+                    if (val === this.x_line ||
                         val === 10e4 ||
                         val === 10e3 ||
                         val === 10e2 ||
@@ -189,10 +196,10 @@ class Graph {
         return new_x_axis;
     };
     
-    init_config = (canvas_name, line_val) => {
+    init_config = (canvas_name, x_line, qx_line, px_line) => {
 
         this.config =  new Config(
-            line_val,
+            x_line, qx_line, px_line,
             this.get_x()[0],
             'line',
             'linear',
@@ -221,7 +228,7 @@ class Graph {
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(150e3);
+                this.config.set_constant_line(this.config.x_line);
                 this.config.update_graph();
         });
 
@@ -232,7 +239,7 @@ class Graph {
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('logarithmic');
-                this.config.set_constant_line(150e3);
+                this.config.set_constant_line(this.config.x_line);
                 this.config.update_graph();
         });
 
@@ -254,7 +261,7 @@ class Graph {
                 this.config.set_x_labels(this.get_qx()[1]);
                 this.config.set_chart_type('bar');
                 this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(1);
+                this.config.set_constant_line(this.config.qx_line);
                 this.config.update_graph();
         });
 
@@ -267,7 +274,7 @@ class Graph {
                 this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(300e3);
+                this.config.set_constant_line(this.config.px_line);
                 this.config.update_graph();
         });
 
@@ -346,8 +353,8 @@ async function setup_charts() {
     await get_data().catch(err => console.log(err));
 
     // Initialize config object
-    confirmed.init_config('canvas-confirmed', 200e3);
-    deaths.init_config('canvas-deaths', 3e3);
+    confirmed.init_config('canvas-confirmed', 200e3, 1, 100000);
+    deaths.init_config('canvas-deaths', 3e3, 1, 100000);
 
     // Initialize deaths graph (with linear data)
 
