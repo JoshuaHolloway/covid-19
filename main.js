@@ -267,8 +267,9 @@ class Graph {
         });
 
         // Click-Event callback [prediction]
-        document.getElementById(`pill-predict-${this.name}`)
-            .addEventListener('click', () => {
+        const pill_predict = document.getElementById(`pill-predict-${this.name}`);
+        if (pill_predict) {
+            pill_predict.addEventListener('click', () => {
                 // const x = this.get_x()[0];
                 // const mirrored = mirror(x);
                 this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30], ['dataset-1', 'datset-2']);
@@ -277,7 +278,8 @@ class Graph {
                 this.config.set_y_scale_type('linear');
                 this.config.set_constant_line(this.config.px_line);
                 this.config.update_graph();
-        });
+            });
+        } // if(pill_predict)
 
     };
 
@@ -363,7 +365,7 @@ async function setup_charts() {
     // Initialize config objects
     confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
     deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
-    recovered.init_config('Total Recovered', 1, 1, 1);
+    recovered.init_config('Total Recovered', 6e3, 1, 1);
 }
 //===============================================
 
