@@ -271,7 +271,32 @@ class Graph {
                 this.config.update_graph();
         });
 
-    };   
+    };
+
+    do_math = (name) => {
+        const yesterday_x = this.get_current_x();
+        const yesterday_dx = this.get_current_dx();
+        const yesterday_qx = this.get_current_qx();
+        const today_expected_dx = Math.round(yesterday_dx * yesterday_qx);
+        const today_expected_x = yesterday_x + today_expected_dx;
+
+        // Display results
+        const date = this.get_x()[1][this.get_x()[1].length-1].split('-');
+        const yesterday = parseInt(date[2],10);
+        const today = yesterday + 1;
+        const month = months[parseInt(date[1],10)-1];
+
+        document.getElementById(`josh-${name}`).innerHTML = 
+            `(${month}-${yesterday}): ${numberWithCommas(yesterday_x)}`;
+
+        document.getElementById(`cases-text-predicted-${name}`).innerHTML = 
+            `<u>Expected Total Cases Today</u> (${month}-${today}): 
+                <u><b>${numberWithCommas(today_expected_x)}</b></u>`;
+        
+        document.getElementById(`cases-text-growth-factor-${name}`).innerHTML = 
+            `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${yesterday_qx.toFixed(2)}`;
+
+    };
 };
 //===============================================
 const confirmed = new Graph('confirmed');
@@ -288,11 +313,9 @@ async function get_data() {
 
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {
-        // Start on March 1st
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
-            //recovered.x.push({'date': elem.date, 'val': elem.recovered});
         }
     });
 
@@ -300,7 +323,6 @@ async function get_data() {
     for (let i = 1; i < confirmed.x.length; ++i) {
         confirmed.dx.push({'date': confirmed.x[i].date, 'val': confirmed.x[i].val - confirmed.x[i-1].val});
         deaths.dx.push({'date': deaths.x[i].date, 'val': deaths.x[i].val - deaths.x[i-1].val});
-        //deaths.dx.push({'date': date_x1, 'val': dx});
     }
 
     // [qx] Growth Factor
@@ -312,41 +334,10 @@ async function get_data() {
         growth_factor = deaths.dx[i].val / deaths.dx[i-1].val;
         if (deaths.dx[i-1].val < 1e-6) growth_factor = null;
         deaths.qx.push({date: deaths.dx[i].date, val: growth_factor});
-
-        
-        //deaths.qx.push({date: date_dx1, val: growth_factor});
     }
 
-    // Total number of cases today:
-    const yesterday_x = confirmed.get_current_x();
-
-    // Number of new cases yesterday:
-    const yesterday_dx = confirmed.get_current_dx();
-
-    // Yesterdays growth rate:
-    const yesterday_qx = confirmed.get_current_qx();
-
-    // Expected new cases today (based on yesterdays growth-rate):
-    const today_expected_dx = Math.round(yesterday_dx * yesterday_qx);
-
-    // Expected total number of cases today:
-    const today_expected_x = yesterday_x + today_expected_dx;
-
-    // Display results
-    const date = confirmed.get_x()[1][confirmed.get_x()[1].length-1].split('-');
-    const yesterday = parseInt(date[2],10);
-    const today = yesterday + 1;
-    const month = months[parseInt(date[1],10)-1];
-
-    document.getElementById('cases-text-current').innerHTML = 
-        `Total Confirmed Cases Yesderday (${month}-${yesterday}): ${numberWithCommas(yesterday_x)}`;
-
-    document.getElementById('cases-text-predicted').innerHTML = 
-        `<u>Expected Total Cases Today</u> (${month}-${today}): 
-            <u><b>${numberWithCommas(today_expected_x)}</b></u>`;
-    
-    document.getElementById('cases-text-growth-factor').innerHTML = 
-        `Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: ${yesterday_qx.toFixed(2)}`;
+    confirmed.do_math('confirmed');
+    deaths.do_math('deaths');
 }
 //===============================================
 async function setup_charts() {
