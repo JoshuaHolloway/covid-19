@@ -306,11 +306,11 @@ async function get_data() {
     // [qx] Growth Factor
     for (let i = 1; i < confirmed.dx.length; ++i) {
         let growth_factor = confirmed.dx[i].val / confirmed.dx[i-1].val;
-        if (dx0 < 1e-6) growth_factor = null;
+        if (confirmed.dx[i-1].val < 1e-6) growth_factor = null;
         confirmed.qx.push({date: confirmed.dx[i].date, val: growth_factor});
 
         growth_factor = deaths.dx[i].val / deaths.dx[i-1].val;
-        if (dx0 < 1e-6) growth_factor = null;
+        if (deaths.dx[i-1].val < 1e-6) growth_factor = null;
         deaths.qx.push({date: deaths.dx[i].date, val: growth_factor});
 
         
