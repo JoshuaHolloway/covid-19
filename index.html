@@ -81,12 +81,16 @@
 
 	<div class="container-fluid" style="padding: 10px 100px 10px 100px">
 
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
 		<div class="row">
 			<div class="col">
 				<h5 style="text-align: center;">United States</h5>
 			</div>
 		</div>
 		
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
 		<div class="row" style="border: blue 3px solid;">
 			<div class="col">
 	
@@ -140,6 +144,8 @@
 		</div>
 		<!-- /.row -->
 
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
 		<div class="row" style="border: green 3px solid;">
 			<div class="col">
 				<h3	id="cases-text-current-deaths" style="text-align: center;">
@@ -189,6 +195,60 @@
 			<!-- ./col -->
 		</div>
 		<!-- /.row -->
+
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+		<div class="row" style="border: green 3px solid;">
+			<div class="col">
+				<h3	id="cases-text-current-recovered" style="text-align: center;">
+					Total Recovered Yesterday: <span id="text-recovered-1"></span>
+				</h3>
+				<h3	id="cases-text-predicted-recovered"style="text-align: center;">
+					<u>Expected Total Recovered Today</u> <span id="text-recovered-2"></span>
+				</h3>
+				<h5	id="cases-text-growth-factor-recovered"style="text-align: center;">
+					Based on Yesterdays <a href="https://youtu.be/Kas0tIxDvrg?t=330">Growth Factor</a>: 
+					<span id="text-recovered-3"></span>
+				</h5>
+
+				<nav>
+					<div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
+
+						<!-- pill-1 -->
+						<div id="pill-linear-recovered"class="nav-item nav-link active" data-toggle="tab">Linear</div>	
+						<!-- /pill-1 -->
+
+						<!-- pill-2 -->
+						<div id="pill-log-recovered"class="nav-item nav-link" data-toggle="tab">Log</div>
+						<!-- /pill-2 -->
+
+						<!-- pill-3-->
+						<div id="pill-change-recovered"class="nav-item nav-link" data-toggle="tab">Change</div>
+						<!-- /pill-3 -->
+
+						<!-- pill-4-->
+						<div id="pill-growth-recovered"class="nav-item nav-link" data-toggle="tab">Growth Factor</div>
+						<!-- /pill-4 -->
+
+						<!-- pill-5-->
+						<div id="pill-predict-recovered"class="nav-item nav-link" data-toggle="tab">Prediction (Best-Case Scenario)</div>
+						<!-- /pill-5 -->
+
+					</div>
+				</nav>
+
+				<div class="tab-content" id="nav-tabContent-deaths">
+					<div style="width:75%;">
+						<canvas id="canvas-recovered"></canvas>
+					</div>
+				</div>
+				<!-- /.tab-content -->
+			</div>
+			<!-- ./col -->
+		</div>
+		<!-- /.row -->
+
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
 		<div class="row">
 			<div class="col">

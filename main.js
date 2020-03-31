@@ -216,16 +216,9 @@ class Graph {
             y_axis_label                // y_axis_label=null            
         );
 
-        // Bind to canvas context
+        // Bind to canvas context and render initialized graph
         const ctx = document.getElementById(`canvas-${this.name}`).getContext('2d');
-        //window.myLine = new Chart(ctx, this.config._);
-        //window_my_line = new Chart(ctx, this.config._);
         this.config.myLine = new Chart(ctx, this.config._);
-
-        //window.myLine.push(new Chart(ctx, this.config._));
-        // console.log('window.myLine:');
-        // console.dir(window.myLine);
-
         this.config.update_graph();
 
         // Click-Event callback [linear]
@@ -315,6 +308,7 @@ class Graph {
 //===============================================
 const confirmed = new Graph('confirmed');
 const deaths = new Graph('deaths');
+const recovered = new Graph('recovered');
 //===============================================
 setup_charts().catch(err => console.log(err));
 //===============================================
@@ -329,6 +323,7 @@ async function get_data() {
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
+            recovered.x.push({'date': elem.date, 'val': elem.recovered});
         }
     });
 
@@ -336,6 +331,7 @@ async function get_data() {
     for (let i = 1; i < confirmed.x.length; ++i) {
         confirmed.dx.push({'date': confirmed.x[i].date, 'val': confirmed.x[i].val - confirmed.x[i-1].val});
         deaths.dx.push({'date': deaths.x[i].date, 'val': deaths.x[i].val - deaths.x[i-1].val});
+        recovered.dx.push({'date': recovered.x[i].date, 'val': recovered.x[i].val - recovered.x[i-1].val});
     }
 
     // [qx] Growth Factor
@@ -347,10 +343,15 @@ async function get_data() {
         growth_factor = deaths.dx[i].val / deaths.dx[i-1].val;
         if (deaths.dx[i-1].val < 1e-6) growth_factor = null;
         deaths.qx.push({date: deaths.dx[i].date, val: growth_factor});
+
+        growth_factor = recovered.dx[i].val / recovered.dx[i-1].val;
+        if (recovered.dx[i-1].val < 1e-6) growth_factor = null;
+        recovered.qx.push({date: recovered.dx[i].date, val: growth_factor});
     }
 
     confirmed.do_math('confirmed');
     deaths.do_math('deaths');
+    recovered.do_math('recovered');
 }
 //===============================================
 async function setup_charts() {
@@ -358,13 +359,9 @@ async function setup_charts() {
     // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
-    // Initialize config object
+    // Initialize config objects
     confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
     deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
-
-    // Initialize deaths graph (with linear data)
-
-    // Initialize (3rd) graph 
 }
 //===============================================
 
