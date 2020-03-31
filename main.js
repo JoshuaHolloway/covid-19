@@ -217,6 +217,7 @@ class Graph {
         );
 
         // Bind to canvas context and render initialized graph
+        console.log(`canvas-${this.name}`);
         const ctx = document.getElementById(`canvas-${this.name}`).getContext('2d');
         this.config.myLine = new Chart(ctx, this.config._);
         this.config.update_graph();
@@ -362,6 +363,7 @@ async function setup_charts() {
     // Initialize config objects
     confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
     deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
+    recovered.init_config('Total Recovered', 1, 1, 1);
 }
 //===============================================
 
