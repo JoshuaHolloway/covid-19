@@ -354,7 +354,7 @@ async function setup_charts() {
 
     // Initialize config object
     confirmed.init_config('canvas-confirmed', 200e3, 1, 100000);
-    deaths.init_config('canvas-deaths', 3e3, 1, 100000);
+    deaths.init_config('canvas-deaths', 4e3, 1, 100000);
 
     // Initialize deaths graph (with linear data)
 
