@@ -324,10 +324,6 @@ async function get_data() {
     const data = await resp.json();
 
     // Decide country
-    // data['US']
-    // data['Japan']
-    // data['China']
-    // data['Korea, South']
     const country = decide_country();
 
     // [x] Instantaneous

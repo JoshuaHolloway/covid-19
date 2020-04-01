@@ -1,5 +1,23 @@
 const decide_country = () => {
-    return 'US';
+
+    // data['US']
+    // data['Japan']
+    // data['China']
+    // data['Korea, South']
+
+    // Get initial dropdown value
+    const dropdown_country = document.getElementById('dropdown-country');
+    let dropdown_value 
+        = dropdown_country.options[dropdown_country.selectedIndex].value;
+    console.log(dropdown_value);
+
+    // Event listener for changed value
+    dropdown_country.addEventListener('change', (event) => {
+        console.dir(event.target.value);
+        dropdown_value = event.target.value;
+    });
+
+    return dropdown_value;
 };
 
 
