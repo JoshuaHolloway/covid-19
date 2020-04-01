@@ -9,12 +9,13 @@ const decide_country = () => {
     const dropdown_country = document.getElementById('dropdown-country');
     let dropdown_value 
         = dropdown_country.options[dropdown_country.selectedIndex].value;
-    console.log(dropdown_value);
 
     // Event listener for changed value
     dropdown_country.addEventListener('change', (event) => {
-        console.dir(event.target.value);
-        dropdown_value = event.target.value;
+        country = event.target.value;
+        use_data(country);
+
+        init_charts();
     });
 
     return dropdown_value;

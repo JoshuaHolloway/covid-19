@@ -317,14 +317,21 @@ const recovered = new Graph('recovered');
 //===============================================
 setup_charts().catch(err => console.log(err));
 //===============================================
+let data;
 async function get_data() {
 
     // Wait on retrieval of data before doing math
     const resp = await fetch(url);
-    const data = await resp.json();
+    data = await resp.json();
 
     // Decide country
     const country = decide_country();
+    use_data(country);
+}
+//===============================================
+const use_data = (country) => {
+
+    console.log(country);
 
     // [x] Instantaneous
     data[country].forEach((elem, idx, arr) => {
@@ -360,16 +367,20 @@ async function get_data() {
     confirmed.do_math('confirmed');
     deaths.do_math('deaths');
     recovered.do_math('recovered');
-}
+};
+//===============================================
+const init_charts = () => {
+    // Initialize config objects
+    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
+    deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
+    recovered.init_config('Total Recovered', 6e3, 1, 1);
+};
 //===============================================
 async function setup_charts() {
 
     // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
-    // Initialize config objects
-    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
-    deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
-    recovered.init_config('Total Recovered', 6e3, 1, 1);
+    init_charts();
 }
 //===============================================
