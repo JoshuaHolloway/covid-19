@@ -235,6 +235,14 @@ class Graph {
         dropdown_country.addEventListener('change', (event) => {
             this.set_country(event.target.value);
             use_data(this.country);
+
+            // Update graphs
+            this.config.set_dataset([this.get_x()[0]], []);
+            this.config.set_x_labels(this.get_x()[1]);
+            this.config.set_chart_type('line');
+            this.config.set_y_scale_type('linear');
+            this.config.set_constant_line(this.config.x_line);
+            this.config.update_graph();
         });
 
 
@@ -335,6 +343,8 @@ async function get_data() {
     // Wait on retrieval of data before doing math
     const resp = await fetch(url);
     data = await resp.json();
+
+    console.log(data);
 
     // Decide country
     const country = decide_country();
