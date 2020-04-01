@@ -168,10 +168,12 @@ class Config {
 };
 //===============================================
 class Graph {
+    country = '';
     name = '';
-    constructor(name) {
+    constructor(name, country) {
         this.name = name;
     };
+    set_country = (country) => this.country = country;
     
     config = null;
     x = [];
@@ -225,6 +227,16 @@ class Graph {
         const ctx = document.getElementById(`canvas-${this.name}`).getContext('2d');
         this.config.myLine = new Chart(ctx, this.config._);
         this.config.update_graph();
+
+        // Event listener for dropdown changed value
+        const dropdown_country = document.getElementById('dropdown-country');
+        let dropdown_value 
+            = dropdown_country.options[dropdown_country.selectedIndex].value;
+        dropdown_country.addEventListener('change', (event) => {
+            this.set_country(event.target.value);
+            use_data(this.country);
+        });
+
 
         // Click-Event callback [linear]
         document.getElementById(`pill-linear-${this.name}`)
@@ -334,6 +346,7 @@ const use_data = (country) => {
     console.log(country);
 
     // [x] Instantaneous
+    confirmed.x = [];    deaths.x = [];    recovered.x = [];
     data[country].forEach((elem, idx, arr) => {
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
@@ -343,6 +356,7 @@ const use_data = (country) => {
     });
 
     // [dx] Change
+    confirmed.dx = [];    deaths.dx = [];    recovered.dx = [];
     for (let i = 1; i < confirmed.x.length; ++i) {
         confirmed.dx.push({'date': confirmed.x[i].date, 'val': confirmed.x[i].val - confirmed.x[i-1].val});
         deaths.dx.push({'date': deaths.x[i].date, 'val': deaths.x[i].val - deaths.x[i-1].val});
@@ -350,6 +364,7 @@ const use_data = (country) => {
     }
 
     // [qx] Growth Factor
+    confirmed.qx = [];    deaths.qx = [];    recovered.qx = [];
     for (let i = 1; i < confirmed.dx.length; ++i) {
         let growth_factor = confirmed.dx[i].val / confirmed.dx[i-1].val;
         if (confirmed.dx[i-1].val < 1e-6) growth_factor = null;
@@ -369,18 +384,14 @@ const use_data = (country) => {
     recovered.do_math('recovered');
 };
 //===============================================
-const init_charts = () => {
-    // Initialize config objects
-    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
-    deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
-    recovered.init_config('Total Recovered', 6e3, 1, 1);
-};
-//===============================================
 async function setup_charts() {
 
     // Make request and wait on data
     await get_data().catch(err => console.log(err));
 
-    init_charts();
+    // Initialize config objects
+    confirmed.init_config('Total Confirmed Cases', 200e3, 1, 300e3);
+    deaths.init_config('Total Deaths', 3.5e3, 1, 50e3);
+    recovered.init_config('Total Recovered', 6e3, 1, 1);
 }
 //===============================================

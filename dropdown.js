@@ -11,12 +11,11 @@ const decide_country = () => {
         = dropdown_country.options[dropdown_country.selectedIndex].value;
 
     // Event listener for changed value
-    dropdown_country.addEventListener('change', (event) => {
-        country = event.target.value;
-        use_data(country);
+    // dropdown_country.addEventListener('change', (event) => {
+    //     country = event.target.value;
+    //     use_data(country);
 
-        init_charts();
-    });
+    // });
 
     return dropdown_value;
 };
