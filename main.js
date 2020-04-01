@@ -106,7 +106,6 @@ class Config {
             );
 
             // set label
-            console.log(datasets_labels);
             if (datasets_labels.length === 0)
                 this._.options.legend = { display: false };
             else {
@@ -223,7 +222,6 @@ class Graph {
         );
 
         // Bind to canvas context and render initialized graph
-        console.log(`canvas-${this.name}`);
         const ctx = document.getElementById(`canvas-${this.name}`).getContext('2d');
         this.config.myLine = new Chart(ctx, this.config._);
         this.config.update_graph();
@@ -324,6 +322,14 @@ async function get_data() {
     // Wait on retrieval of data before doing math
     const resp = await fetch(url);
     const data = await resp.json();
+
+    // Decide country
+    // data['US']
+    // data['Japan']
+    // data['China']
+    // data['Korea, South']
+    
+
 
     // [x] Instantaneous
     data.US.forEach((elem, idx, arr) => {

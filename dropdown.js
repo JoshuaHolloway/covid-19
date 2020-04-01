@@ -1,4 +1,3 @@
-console.log('josh');
 
 $('.dropdown-menu a').on('click', function(){
     // $('#datebox').val($(this).text());
