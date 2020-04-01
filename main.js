@@ -328,11 +328,10 @@ async function get_data() {
     // data['Japan']
     // data['China']
     // data['Korea, South']
-    
-
+    const country = decide_country();
 
     // [x] Instantaneous
-    data.US.forEach((elem, idx, arr) => {
+    data[country].forEach((elem, idx, arr) => {
         if(idx > 0) {
             confirmed.x.push({'date': elem.date, 'val': elem.confirmed});
             deaths.x.push({'date': elem.date, 'val': elem.deaths});
@@ -378,5 +377,3 @@ async function setup_charts() {
     recovered.init_config('Total Recovered', 6e3, 1, 1);
 }
 //===============================================
-
-

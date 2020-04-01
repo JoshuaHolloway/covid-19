@@ -1,3 +1,8 @@
+const decide_country = () => {
+    return 'US';
+};
+
+
 
 $('.dropdown-menu a').on('click', function(){
     // $('#datebox').val($(this).text());
