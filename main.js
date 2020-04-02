@@ -239,6 +239,29 @@ class Graph {
         this.config.myLine = new Chart(ctx, this.config._);
         this.config.update_graph();
 
+        const render_graph = (
+            datasets=[this.get_x()[0]], 
+            datasets_titles=[`${this.country}: Total ${this.name}`],
+            x_labels=this.get_x()[1],
+            chart_type='line',
+            y_scale_type='linear',
+            constant_line_val=null
+            ) => {
+                // Set y-axis min/max
+                this.config.set_y_axis_max_min(0, this.config.get_x_max);
+
+                // Update graphs
+                this.config.set_dataset(datasets, datasets_titles);
+                this.config.set_x_labels(x_labels);
+                this.config.set_chart_type(chart_type);
+                this.config.set_y_scale_type(y_scale_type);
+                if(constant_line_val===null)
+                    this.config.clear_constant_line();
+                else
+                    this.config.set_constant_line(constant_line_val);
+                this.config.update_graph();
+        };
+
         // Event listener for dropdown changed value
         const dropdown_country = document.getElementById('dropdown-country');
         let dropdown_value 
@@ -249,14 +272,6 @@ class Graph {
 
             // Set y-axis min/max
             this.config.set_y_axis_max_min(0, this.config.get_x_max);
-
-            // Set data label with country name
-            //this.config.set_y_label('JOSH');
-            // this.config.set_chart_title('JOSH');
-            // this.config.enable_disable_chart_title(true);
-
-            // Set data-label with country name
-
 
             // Update graphs
             this.config.set_dataset([this.get_x()[0]], [`${this.country}: Total ${this.name}`]);
@@ -272,34 +287,44 @@ class Graph {
         // Click-Event callback [linear]
         document.getElementById(`pill-linear-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_x()[0]], []);
+
+                // Set y-axis min/max
+                this.config.set_y_axis_max_min(0, this.config.get_x_max);
+
+                // Update graphs
+                this.config.set_dataset([this.get_x()[0]], [`${this.country}: Total ${this.name}`]);
                 this.config.set_x_labels(this.get_x()[1]);
                 this.config.set_chart_type('line');
                 this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(this.config.x_line);
+                // this.config.set_constant_line(this.config.x_line);
+                this.config.clear_constant_line();
                 this.config.update_graph();
         });
 
         // Click-Event callback [logarithmic]
         document.getElementById(`pill-log-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_x()[0]], []);
-                this.config.set_x_labels(this.get_x()[1]);
-                this.config.set_chart_type('line');
-                this.config.set_y_scale_type('logarithmic');
-                this.config.set_constant_line(this.config.x_line);
-                this.config.update_graph();
+
+                render_graph(
+                    [this.get_x()[0]],      // datasets=[this.get_x()[0]], 
+                    [],                     // datasets_titles=[`${this.country}: Total ${this.name}`],
+                    this.get_x()[1],        // x_labels=this.get_x()[1],
+                    'line',                 // chart_type='line',
+                    'logarithmic',          // y_scale_type='linear',
+                    null);                  // constant_line_val=null
         });
 
         // Click-Event callback [change]
         document.getElementById(`pill-change-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_dx()[0]], []);
-                this.config.set_x_labels(this.get_dx()[1]);
-                this.config.set_chart_type('bar');
-                this.config.set_y_scale_type('linear');
-                this.config.clear_constant_line();
-                this.config.update_graph();
+
+                render_graph(
+                    [this.get_dx()[0]], // datasets=[this.get_x()[0]], 
+                    [],                 // datasets_titles=[`${this.country}: Total ${this.name}`],
+                    this.get_dx()[1],   // x_labels=this.get_x()[1],
+                    'bar',              // chart_type='line',
+                    'linear',           // y_scale_type='linear',
+                    null);              // constant_line_val=null
         });
 
         // Click-Event callback [growth-factor]
