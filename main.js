@@ -116,6 +116,7 @@ class Config {
     };
     set_chart_type = chart_type => this._.type = chart_type;
     set_chart_title = chart_title => this._.options.title.text = chart_title;
+    enable_disable_chart_title = (bool_val) => this._.options.title.display = bool_val;
     
     set_y_label = y_axis_label => this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
     set_x_labels = x_labels => this._.data.labels = x_labels;
@@ -249,8 +250,16 @@ class Graph {
             // Set y-axis min/max
             this.config.set_y_axis_max_min(0, this.config.get_x_max);
 
+            // Set data label with country name
+            //this.config.set_y_label('JOSH');
+            // this.config.set_chart_title('JOSH');
+            // this.config.enable_disable_chart_title(true);
+
+            // Set data-label with country name
+
+
             // Update graphs
-            this.config.set_dataset([this.get_x()[0]], []);
+            this.config.set_dataset([this.get_x()[0]], [this.country]);
             this.config.set_x_labels(this.get_x()[1]);
             this.config.set_chart_type('line');
             this.config.set_y_scale_type('linear');
