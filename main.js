@@ -119,6 +119,12 @@ class Config {
     
     set_y_label = y_axis_label => this._.options.scales.yAxes[0].scaleLabel.labelString = y_axis_label;
     set_x_labels = x_labels => this._.data.labels = x_labels;
+
+    set_y_axis_max_min = (min, max) => {
+        this._.options.scales.yAxes[0].ticks.min = min;
+        this._.options.scales.yAxes[0].ticks.max = max;
+    };
+
     set_y_scale_type = y_scale_type => {
         this._.options.scales.yAxes[0].type = y_scale_type
        if(y_scale_type == 'linear') {
@@ -206,6 +212,10 @@ class Graph {
         return new_x_axis;
     };
 
+    get_x_max = function() {
+        return Math.max(this.get_x()[0]);
+    };
+
     // TODO: Compute sigmoidal regression:
     compute_sigmoidal_regression = () => {
         // TODO: Add code here
@@ -236,12 +246,16 @@ class Graph {
             this.set_country(event.target.value);
             use_data(this.country);
 
+            // Set y-axis min/max
+            this.config.set_y_axis_max_min(0, this.config.get_x_max);
+
             // Update graphs
             this.config.set_dataset([this.get_x()[0]], []);
             this.config.set_x_labels(this.get_x()[1]);
             this.config.set_chart_type('line');
             this.config.set_y_scale_type('linear');
-            this.config.set_constant_line(this.config.x_line);
+            //this.config.set_constant_line(this.config.x_line);
+            this.config.clear_constant_line();
             this.config.update_graph();
         });
 

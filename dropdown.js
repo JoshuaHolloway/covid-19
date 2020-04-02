@@ -1,3 +1,4 @@
+// ==============================================
 const decide_country = () => {
 
     // data['US']
@@ -9,19 +10,9 @@ const decide_country = () => {
     const dropdown_country = document.getElementById('dropdown-country');
     let dropdown_value 
         = dropdown_country.options[dropdown_country.selectedIndex].value;
-
-    // Event listener for changed value
-    // dropdown_country.addEventListener('change', (event) => {
-    //     country = event.target.value;
-    //     use_data(country);
-
-    // });
-
-    return dropdown_value;
+     return dropdown_value;
 };
-
-
-
+// ==============================================
 $('.dropdown-menu a').on('click', function(){
     // $('#datebox').val($(this).text());
     console.log('clicked');
@@ -37,3 +28,4 @@ $('#dropdown-menu li').on('click', function(){
     // $('#datebox').val($(this).text());
     console.log('clicked');
 });
+// ==============================================
