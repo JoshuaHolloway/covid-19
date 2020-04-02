@@ -247,8 +247,22 @@ class Graph {
             y_scale_type='linear',
             constant_line_val=null
             ) => {
+
+                let max = 0;
+                datasets.forEach((dataset, idx, arr) => {
+                    let temp = Math.max(...dataset);
+                    console.log('temp = ' + temp);
+                    console.log(dataset);
+
+                    if (temp > max)
+                        max = temp;
+                });
+                // const round_up_to_nearest_ten = x => Math.ceil((x+1)/10)*10;
+                // max = round_up_to_nearest_ten(max);
+                console.log('max = ' + max);
+
                 // Set y-axis min/max
-                this.config.set_y_axis_max_min(0, this.config.get_x_max);
+                this.config.set_y_axis_max_min(0, max);
 
                 // Update graphs
                 this.config.set_dataset(datasets, datasets_titles);
@@ -304,52 +318,42 @@ class Graph {
         // Click-Event callback [logarithmic]
         document.getElementById(`pill-log-${this.name}`)
             .addEventListener('click', () => {
-
                 render_graph(
-                    [this.get_x()[0]],      // datasets=[this.get_x()[0]], 
-                    [],                     // datasets_titles=[`${this.country}: Total ${this.name}`],
-                    this.get_x()[1],        // x_labels=this.get_x()[1],
-                    'line',                 // chart_type='line',
-                    'logarithmic',          // y_scale_type='linear',
-                    null);                  // constant_line_val=null
+                    // datasets,           x_labels,                 y_scale_type,
+                    [this.get_x()[0]], [], this.get_x()[1], 'line', 'logarithmic', null);
+                    //                 datasets_titles,      chart_type,           constant_line_val
         });
 
         // Click-Event callback [change]
         document.getElementById(`pill-change-${this.name}`)
             .addEventListener('click', () => {
-
                 render_graph(
-                    [this.get_dx()[0]], // datasets=[this.get_x()[0]], 
-                    [],                 // datasets_titles=[`${this.country}: Total ${this.name}`],
-                    this.get_dx()[1],   // x_labels=this.get_x()[1],
-                    'bar',              // chart_type='line',
-                    'linear',           // y_scale_type='linear',
-                    null);              // constant_line_val=null
+                    // datasets,            x_labels,                 y_scale_type,
+                    [this.get_dx()[0]], [], this.get_dx()[1], 'bar', 'linear', null);
+                    //                  datasets_titles,       chart_type,     constant_line_val
         });
 
         // Click-Event callback [growth-factor]
         document.getElementById(`pill-growth-${this.name}`)
             .addEventListener('click', () => {
-                this.config.set_dataset([this.get_qx()[0]], []);
-                this.config.set_x_labels(this.get_qx()[1]);
-                this.config.set_chart_type('bar');
-                this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(this.config.qx_line);
-                this.config.update_graph();
+                render_graph(
+                    // datasets,            x_labels,                 y_scale_type,
+                    [this.get_qx()[0]], [], this.get_qx()[1], 'bar', 'linear', this.config.qx_line);
+                    //                  datasets_titles,       chart_type,     constant_line_val
         });
 
         // Click-Event callback [prediction]
-        const pill_predict = document.getElementById(`pill-predict-${this.name}`);
-        if (pill_predict) {
-            pill_predict.addEventListener('click', () => {
-                this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30], ['dataset-1', 'datset-2']);
-                this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
-                this.config.set_chart_type('line');
-                this.config.set_y_scale_type('linear');
-                this.config.set_constant_line(this.config.px_line);
-                this.config.update_graph();
-            });
-        } // if(pill_predict)
+        // const pill_predict = document.getElementById(`pill-predict-${this.name}`);
+        // if (pill_predict) {
+        //     pill_predict.addEventListener('click', () => {
+        //         this.config.set_dataset([this.get_x()[0], sigmoidal_regression_03_30], ['dataset-1', 'datset-2']);
+        //         this.config.set_x_labels(this.get_x_axis_for_sigmoidal_regression());
+        //         this.config.set_chart_type('line');
+        //         this.config.set_y_scale_type('linear');
+        //         this.config.set_constant_line(this.config.px_line);
+        //         this.config.update_graph();
+        //     });
+        // } // if(pill_predict)
 
     };
 
