@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart</title>
+	<script src="./lib/chart.js-2.9.3/dist/Chart.min.js"></script>
+	<script src="./lib/chart.js-2.9.3/dist/utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<br>
+	<br>
+	<button id="randomizeData">Randomize Data</button>
+	<button id="addDataset">Add Dataset</button>
+	<button id="removeDataset">Remove Dataset</button>
+	<button id="addData">Add Data</button>
+	<button id="removeData">Remove Data</button>
+
+	<script src="data.js"></script>
+	<script>
+
+const data_2 = [
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,5,6,9,11,15,18,22,28,28,36,40,44,50,56,59,69,79,103,127,142,214,261,318,444,560,718,948,1214,1600,2030,2477,2997,3874,4773.531,5809.29,7003.595,8363.479,9892.634,11591.963,13456.688,
+15481.257,17649.958,19946.323,22353.491,24849.57,27412.426,30021.942,32658.958,
+35303.373,37937.14,40543.955,43109.292,45620.834,48068.47,50443.511,52739.903,
+54952.87,57079.547,59118.989,61070.428,62934.034,64712.728,66408.066,68022.313,
+69558.919,71021.639,72412.534,73735.103,74991.156,76185.115,77318.316,78391.462,
+79406.636,80366.915,81274.862,82131.453,82939.075,83699.598,84414.746,85085.246,
+85713.304,86300.452,86848.75,87360.13,87837.635,88281.879,88695.4,89079.289,
+89435.418,89764.836,90069.143,90350.619,90611.464,90851.935,91073.921,91278.594,
+91467.612,91641.904,91802.024,91949.513,92085.003,92209.691,92324.389,92429.907,
+92526.828,92615.937,92697.661,92772.708,92841.768,92905.313,92963.786,93017.531,
+93066.951,93112.3,93153.879,93192.04,93227.075,93259.034,93288.214,93314.895,
+93339.409,93361.441,93381.554,93399.794,93416.372,93431.376,93444.491,93456.314,
+93467.056,93476.834,93485.611,93493.405,93500.41,93506.768,93512.529,93517.751,
+93522.505,93526.751,93530.505,93530.505,93530.505,93530.505,93530.505,93530.505,
+93530.505,93530.505,93530.505,93530.505,93530.505,93530.505,93530.505,93530.505,
+93530.505,93530.505,93530.505,93530.505,93530.505,93530.505,93530.505];
+
+const data_1 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,5,6,9,11,15,18,22,28,28,36,40,44,50,56,59,69,79,103,127,
+142,214,261,318,444,560,718,948,1214,1600,2030,2477,2997,3874,4703.975,5628.95,6663.95,
+7795,9022.875,10332.725,11705.45,13136.15,14595.85,16049.85,17493.9,
+18909.075,20279.45,21600.775,22871,24103.725,25254.35,26349.975,27383.75,
+28359.575,29278.375,30142.275,30953.2,31712.2,32426.175,33090.25,33710.35,
+34286.45,34817.575,35310.625,35764.725,36186.8,36571.825,36924.95,37248.075,
+37540.175,37808.225,38054.225,38276.25,38475.25,38652.275,38814.25,38960.175,
+39091.2,39207.15,39311.125,39401.05,39477.95,39546.9,39607.875,39662.8,
+39710.725,39751.675,39788.55,39816.5,39842.425,39866.275,39884.225,39900.15,
+39912.15,39923.125,39934.1,39940.075,39946.025,39951.975,39955.925,39959.875,
+39962.825,39964.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,
+39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,
+39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,
+39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,
+39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,
+39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,
+39965.8,39965.8,39965.8,39965.8,39965.8,39965.8,39965.8];
+
+const data_3 = [0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,5,6,9,11,15,18,22,28,28,36,40,44,50,56,59,69,79,103,127,142,214,
+261,318,444,560,718,948,1214,1600,2030,2477,2997,3874,4836,5965.025,7300.025,8857,
+10646.25,12682.25,14969.3,17518.2,20317.15,23361.075,26631.35,30117.7,
+33802.05,37661.35,41670.625,45806.85,50042.15,54350.55,58715.85,63114.95,
+67519.275,71914.2,76279.175,80603.9,84874.475,89085.8,93224.9,97273.2,
+101198.35,105023.65,108782.325,112442.875,116000.5,119452.175,122790.85,126014.575,
+129119.35,132108.025,134970.85,137712.725,140331.2,142822.75,145189.3,147436.75,
+149565.2,151523.225,153359.675,155081.05,156693.45,158207.675,159622.875,160944.9,
+162173.95,163321,164390.85,165380.75,166300.425,167154.225,167947.825,168684.35,
+169368.9,170004.325,170592.675,171137.175,171643.575,172113.025,172550.275,172958.55,
+173338.825,173690.15,174018.35,174323.6,174608.85,174871.175,175116.4,175344.575,
+175555.775,175751.95,175936.125,176106.375,176265.575,176412.8,176550.95,176675.25,
+176790.5,176898.75,176999,177092.25,177178.4,177258.5,177329.675,177395.8,
+177455.95,177511.075,177560.225,177604.4,177645.55,177682.7,177715.85,177744,177770.125,
+177793.25,177814.375,177833.5,177850.625,177865.725,177865.725,177865.725,177865.725,
+177865.725,177865.725,177865.725,177865.725,177865.725,177865.725,177865.725,177865.725,
+177865.725,177865.725,177865.725,177865.725,177865.725,177865.725,177865.725,177865.725,
+177865.725];
+
+
+		let dates = [];
+		for (let i = 1; i <= 181; i++)
+			dates.push(i);
+		const config = {
+			type: 'line',
+			data: {
+				labels: dates,
+				datasets: [{
+					label: 'My First dataset',
+					borderColor: window.chartColors.red,
+					backgroundColor: window.chartColors.red,
+					data: data_1,
+				}, {
+					label: 'My Second dataset',
+					borderColor: window.chartColors.blue,
+					backgroundColor: window.chartColors.blue,
+					data: data_2,
+				}, {
+					label: 'My Third dataset',
+					borderColor: window.chartColors.green,
+					backgroundColor: window.chartColors.green,
+					data: data_3,
+				}, {
+					label: 'My Third dataset',
+					borderColor: window.chartColors.yellow,
+					backgroundColor: window.chartColors.yellow,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart - Stacked Area'
+				},
+				tooltips: {
+					mode: 'index',
+				},
+				hover: {
+					mode: 'index'
+				},
+				scales: {
+					xAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						stacked: false,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			config.data.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map(function() {
+					return randomScalingFactor();
+				});
+
+			});
+
+			window.myLine.update();
+		});
+
+		var colorNames = Object.keys(window.chartColors);
+		document.getElementById('addDataset').addEventListener('click', function() {
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+			var newDataset = {
+				label: 'Dataset ' + config.data.datasets.length,
+				borderColor: newColor,
+				backgroundColor: newColor,
+				data: [],
+			};
+
+			for (var index = 0; index < config.data.labels.length; ++index) {
+				newDataset.data.push(randomScalingFactor());
+			}
+
+			config.data.datasets.push(newDataset);
+			window.myLine.update();
+		});
+
+		document.getElementById('addData').addEventListener('click', function() {
+			if (config.data.datasets.length > 0) {
+				var month = MONTHS[config.data.labels.length % MONTHS.length];
+				config.data.labels.push(month);
+
+				config.data.datasets.forEach(function(dataset) {
+					dataset.data.push(randomScalingFactor());
+				});
+
+				window.myLine.update();
+			}
+		});
+
+		document.getElementById('removeDataset').addEventListener('click', function() {
+			config.data.datasets.splice(0, 1);
+			window.myLine.update();
+		});
+
+		document.getElementById('removeData').addEventListener('click', function() {
+			config.data.labels.splice(-1, 1); // remove the label first
+
+			config.data.datasets.forEach(function(dataset) {
+				dataset.data.pop();
+			});
+
+			window.myLine.update();
+		});
+	</script>
+</body>
+
+</html>
