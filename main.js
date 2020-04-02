@@ -259,7 +259,7 @@ class Graph {
 
 
             // Update graphs
-            this.config.set_dataset([this.get_x()[0]], [this.country]);
+            this.config.set_dataset([this.get_x()[0]], [`${this.country}: Total ${this.name}`]);
             this.config.set_x_labels(this.get_x()[1]);
             this.config.set_chart_type('line');
             this.config.set_y_scale_type('linear');
